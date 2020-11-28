@@ -1,0 +1,26 @@
+{
+  "cwd": "/Users/Alex/Documents/JSProjects/Framework7",
+  "type": [
+    "pwa"
+  ],
+  "name": "UpFood Comenzi Admin",
+  "framework": "react",
+  "template": "tabs",
+  "bundler": "webpack",
+  "cssPreProcessor": false,
+  "theming": {
+    "customColor": true,
+    "color": "#004e3f",
+    "darkTheme": false,
+    "iconFonts": true,
+    "fillBars": true
+  },
+  "customBuild": false,
+  "webpack": {
+    "developmentSourceMap": true,
+    "productionSourceMap": true,
+    "hashAssets": false,
+    "preserveAssetsPaths": false,
+    "inlineAssets": true
+  }
+}
