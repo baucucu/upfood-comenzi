@@ -17,12 +17,16 @@ export default function(props) {
         setLoading(false);
       })
   },[])
+  const searchbarSearch = (s,q,p) => {
+    console.log(q)
+  }
 
   return (
     <Page name="orders">
       <Navbar title="Orders">
         <Subnavbar inner={false}>
           <Searchbar
+            onSearchbarSearch ={searchbarSearch}
             searchContainer=".search-list"
             searchItem="li"
             searchIn=".item-title , .item-subtitle"
