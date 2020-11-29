@@ -18,15 +18,6 @@ export default function(props) {
       })
   },[])
 
-  // const searchAll  = (query, orders) =>{
-  //   const found=[]
-  //   orders.map((order, index) => {
-  //     if(order.title.indexOf(query) > -1 || query.trim() === '') found.push(index)
-  //   })
-  //   console.log(found)
-  //   return found
-  // }
-
   return (
     <Page name="orders">
       <Navbar title="Orders">
@@ -34,11 +25,10 @@ export default function(props) {
           <Searchbar
             searchContainer=".search-list"
             searchItem="li"
-            searchIn=".item-title"
+            searchIn=".item-title , .item-subtitle"
           ></Searchbar>
         </Subnavbar>
       </Navbar>
-      {loading ? <Block>Loading...</Block> :
       <Card>
         <Block>Orders: {orders.length}</Block>
 
@@ -55,10 +45,10 @@ export default function(props) {
                 after={order.total+' lei'}
                 link={`/order/${order.id}/`}
                 noChevron={true}
-              />)
+              ></ListItem>)
             })}
         </List>
-      </Card>}
+      </Card>
     </Page>
   );
 }
