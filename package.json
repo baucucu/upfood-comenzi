@@ -9,7 +9,7 @@
   },
   "license": "UNLICENSED",
   "scripts": {
-    "start": "npm run dev",
+    "start": "npm run dev && node -r dotenv/config src/app.js",
     "dev": "cross-env NODE_ENV=development webpack-dev-server --config ./build/webpack.config.js",
     "build-dev": "cross-env NODE_ENV=development node ./build/build.js",
     "build-prod": "cross-env NODE_ENV=production node ./build/build.js",
@@ -25,6 +25,7 @@
   ],
   "dependencies": {
     "dom7": "^2.1.5",
+    "dotenv": "^8.2.0",
     "dotenv-webpack": "^6.0.0",
     "framework7": "^5.7.14",
     "framework7-icons": "^3.0.1",

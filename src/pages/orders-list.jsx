@@ -1,6 +1,6 @@
 import React from 'react';
 import {useState, useEffect} from 'react';
-import { Block,Card, Subnavbar, Searchbar,Page, Navbar, List, ListItem, } from 'framework7-react';
+import { Block, Card, Subnavbar, Searchbar, Page, Navbar, List, ListItem, ListGroup } from 'framework7-react';
 import moment from 'moment';
 import _ from 'lodash';
 
@@ -19,6 +19,12 @@ export default function(props) {
   },[])
   const searchbarSearch = (s,q,p) => {
     console.log(q)
+  }
+  const groupOrders = (orders) => {
+    let result = orders.map(order => moment(order.createDate).format('D MMM YYYY'))
+    let filteredResult = _.uniq(result)
+    // console.log(filteredResult)
+    return filteredResult
   }
 
   return (
@@ -41,7 +47,24 @@ export default function(props) {
         </List>
         
         <List mediaList className="search-list searchbar-found">
-            {orders.map(order => { return(
+            {groupOrders(orders).map((group, index) => {
+              return(
+                <ListGroup mediaList key={index}>
+                  <ListItem title={group} groupTitle></ListItem>
+                  {orders.map(order => { if(moment(order.createDate).format('D MMM YYYY') === group) return(
+                    <ListItem
+                      key={order.id}
+                      title={'Comanda #' + order.id+' @ '+ moment(order.createDate.replace('0000','0200')).format('HH:mm') + ''}
+                      subtitle={order.paymentMethod + ': ' + order.paymentStatus + ' | ' + order.fulfillmentStatus }
+                      after={order.total+' lei'}
+                      link={`/order/${order.id}/`}
+                      noChevron={true}
+                    ></ListItem>)
+                  })}
+                </ListGroup>
+              )
+            })}
+            {/* {orders.map(order => { return(
               <ListItem
                 key={order.id}
                 title={order.id+' @ '+ moment(order.createDate.replace('0000','0200')).format('D MMM YYYY HH:mm')}
@@ -50,7 +73,7 @@ export default function(props) {
                 link={`/order/${order.id}/`}
                 noChevron={true}
               ></ListItem>)
-            })}
+            })} */}
         </List>
       </Card>
     </Page>
