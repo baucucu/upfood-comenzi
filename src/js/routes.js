@@ -1,8 +1,10 @@
 
 import HomePage from '../pages/home.jsx';
+import OrdersPage from '../pages/orders-list.jsx';
+import OrderDetailsPage from '../pages/order-details.jsx';
 import AboutPage from '../pages/about.jsx';
 import FormPage from '../pages/form.jsx';
-import CatalogPage from '../pages/catalog.jsx';
+// import CatalogPage from '../pages/catalog.jsx';
 import ProductPage from '../pages/product.jsx';
 import SettingsPage from '../pages/settings.jsx';
 
@@ -20,13 +22,21 @@ var routes = [
     component: AboutPage,
   },
   {
+    path: '/orders/',
+    component: OrdersPage,
+  },
+  {
+    path: '/order/:id/',
+    component: OrderDetailsPage,
+  },
+  {
     path: '/form/',
     component: FormPage,
   },
-  {
-    path: '/catalog/',
-    component: CatalogPage,
-  },
+  // {
+  //   path: '/catalog/',
+  //   component: CatalogPage,
+  // },
   {
     path: '/product/:id/',
     component: ProductPage,

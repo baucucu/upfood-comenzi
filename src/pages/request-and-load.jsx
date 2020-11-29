@@ -15,9 +15,9 @@ export default class extends React.Component {
     return (
       <Page>
         <Navbar title={`${user.firstName} ${user.lastName}`} backLink="Back" />
-        <Block strong>
+        <BlockTitle large>
           {user.about}
-        </Block>
+        </BlockTitle>
         <List>
           {user.links.map((link, index) => (
             <ListItem

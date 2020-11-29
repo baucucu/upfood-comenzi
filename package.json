@@ -4,6 +4,9 @@
   "version": "1.0.0",
   "description": "UpFood Comenzi Admin",
   "repository": "",
+  "browser": {
+    "fs": false
+  },
   "license": "UNLICENSED",
   "scripts": {
     "start": "npm run dev",
@@ -22,12 +25,16 @@
   ],
   "dependencies": {
     "dom7": "^2.1.5",
+    "dotenv-webpack": "^6.0.0",
     "framework7": "^5.7.14",
     "framework7-icons": "^3.0.1",
     "framework7-react": "^5.7.14",
+    "lodash": "^4.17.20",
+    "moment": "^2.29.1",
     "prop-types": "^15.7.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-moment": "^1.0.0",
     "template7": "^1.4.2"
   },
   "devDependencies": {

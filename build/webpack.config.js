@@ -6,6 +6,8 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
+
 
 const path = require('path');
 
@@ -19,6 +21,9 @@ const target = process.env.TARGET || 'web';
 
 
 module.exports = {
+  node: {
+    fs: "empty"
+  },
   mode: env,
   entry: {
     app: './src/js/app.js',
@@ -160,6 +165,7 @@ module.exports = {
     ],
   },
   plugins: [
+    new Dotenv(), 
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(env),
       'process.env.TARGET': JSON.stringify(target),

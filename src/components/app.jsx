@@ -24,6 +24,8 @@ import {
 
 import routes from '../js/routes';
 
+// require('dotenv').config();
+
 export default class extends React.Component {
   constructor() {
     super();
@@ -102,7 +104,8 @@ export default class extends React.Component {
           {/* Tabbar for switching views-tabs */}
           <Toolbar tabbar labels bottom>
             <Link tabLink="#view-home" tabLinkActive iconIos="f7:house_fill" iconAurora="f7:house_fill" iconMd="material:home" text="Home" />
-            <Link tabLink="#view-catalog" iconIos="f7:square_list_fill" iconAurora="f7:square_list_fill" iconMd="material:view_list" text="Catalog" />
+            <Link tabLink="#view-orders" iconIos="f7:square_book_fill" iconAurora="f7:square_book_fill" iconMd="material:shopping_cart" text="Orders" />
+            {/* <Link tabLink="#view-catalog" iconIos="f7:square_list_fill" iconAurora="f7:square_list_fill" iconMd="material:view_list" text="Catalog" /> */}
             <Link tabLink="#view-settings" iconIos="f7:gear" iconAurora="f7:gear" iconMd="material:settings" text="Settings" />
           </Toolbar>
 
@@ -111,6 +114,9 @@ export default class extends React.Component {
 
           {/* Catalog View */}
           <View id="view-catalog" name="catalog" tab url="/catalog/" />
+
+          {/* Catalog View */}
+          <View id="view-orders" name="orders" tab url="/orders/" />
 
           {/* Settings View */}
           <View id="view-settings" name="settings" tab url="/settings/" />
