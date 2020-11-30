@@ -48,7 +48,7 @@ export default function(props) {
   }
 
   const groupOrders = (orders) => {
-    let result = orders.map(order => moment(order.createDate).format('D MMM YYYY'))
+    let result = orders.map(order => moment(new Date(order.createDate)).format('D MMM YYYY'))
     let filteredResult = _.uniq(result)
     // console.log(filteredResult)
     return filteredResult
