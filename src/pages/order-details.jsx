@@ -60,7 +60,7 @@ export default function(props) {
             {_.has(order, 'shippingPerson') ? <CardHeader>{order.shippingPerson.name}: {order.shippingPerson.phone}</CardHeader> : null}
             <CardContent>
               
-              <Block strong>{moment.tz(order.createDate,dateFormat,region)}: {moment.tz(order.createDate,timeFormat,region)}</Block>
+              <Block strong>{new Date(order.createDate.replace(/-/g, "/"))}: {moment.tz(order.createDate,timeFormat,region)}</Block>
              
               {_.has(order, 'shippingPerson') ? <Block strong>
                 {order.shippingPerson.street}
