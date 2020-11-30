@@ -1,7 +1,6 @@
 import React from 'react';
 import {useState, useEffect} from 'react';
-import { Block, BlockTitle, useRef, Row, Col, Button,Card, Subnavbar, Searchbar, Page, Navbar, List, ListItem, ListGroup, Segmented } from 'framework7-react';
-import moment from 'moment';
+import { BlockTitle, Card, Subnavbar, Searchbar, Page, Navbar, List, ListItem, ListGroup } from 'framework7-react';
 import _ from 'lodash';
 import { f7, f7ready } from 'framework7-react';
 
@@ -12,7 +11,8 @@ export default function(props) {
   const [filters, setFilters] = useState(['AWAITING_PAYMENT','CANCELLED','AWAITING_PROCESSING','PROCESSING','SHIPPED','RETURNED'])
   
   useEffect(() => {  
-    fetch(`https://app.ecwid.com/api/v3/39042093/orders?token=secret_aSPm45zBRYXfkiribm58TDtgKqdVwEn7`,)
+    console.log("token: ",process.env.TOKEN)
+    fetch(`https://app.ecwid.com/api/v3/39042093/orders?token=${process.env.TOKEN}`,)
       .then(response => response.json())
       .then(data => {
         setOrders(data.items);
@@ -41,7 +41,11 @@ export default function(props) {
   }
 
   const groupOrders = (orders) => {
+<<<<<<< HEAD
     let result = orders.map(order => moment(order.createDate).format('YYYY/MM/DD'))
+=======
+    let result = orders.map(order => new Date(order.dateCreated,"YYYY/MM/DD"))
+>>>>>>> 106e1af73530353e3b7d6e4efc47a32c940bc39f
     let filteredResult = _.uniq(result)
     return filteredResult
   }
@@ -80,7 +84,8 @@ export default function(props) {
             <option value='RETURNED'>RETURNED</option>
           </optgroup>
         </select>
-        </ListItem>
+      </ListItem>
+      
       <Card>
         <BlockTitle>Orders: {filterOrders().length}</BlockTitle>
 
@@ -93,10 +98,14 @@ export default function(props) {
               return(
                 <ListGroup mediaList key={index}>
                   <ListItem title={group} groupTitle></ListItem>
+<<<<<<< HEAD
                   {filterOrders().map(order => { if(moment(order.createDate).format('YYYY/MM/DD') === group) return(
+=======
+                  {filterOrders().map(order => { if(new Date(order.dateCreated,"YYYY/MM/DD") === group) return(
+>>>>>>> 106e1af73530353e3b7d6e4efc47a32c940bc39f
                     <ListItem
                       key={order.id}
-                      title={'Comanda #' + order.id+' @ '+ moment(order.createDate.replace('0000','0200')).format('HH:mm') + ''}
+                      title={'Comanda #' + order.id+' @ '+ new Date(order.dateCreated,"HH:mm") + ''}
                       subtitle={order.paymentMethod + ': ' + order.paymentStatus + ' | ' + order.fulfillmentStatus }
                       after={order.total+' lei'}
                       link={`/order/${order.id}/`}

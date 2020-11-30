@@ -1,7 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import { Actions, ActionsGroup, ActionsLabel, ActionsButton, Button, List, Page, Card,CardContent, CardHeader, CardFooter, Navbar, BlockTitle, Block, ListItem } from 'framework7-react';
-import moment from 'moment';
 import _ from 'lodash';
+
+var dateFormat = "YYYY-M-D";
+var timeFormat = "HH:mm";
+var region = 'Europe/Bucharest';
 
 export default function(props) {
   
@@ -56,7 +59,7 @@ export default function(props) {
             {_.has(order, 'shippingPerson') ? <CardHeader>{order.shippingPerson.name}: {order.shippingPerson.phone}</CardHeader> : null}
             <CardContent>
               
-              <Block strong>{moment(order.createDate.replace('0000','0200')).format('D MMM YYYY')}: {moment(order.createDate.replace('0000','0200')).format('HH:mm')}</Block>
+              <Block strong>{new Date(order.dateCreated,"YYYY/MM/DD")}: {new Date(order.dateCreated,"HH:mm")}</Block>
              
               {_.has(order, 'shippingPerson') ? <Block strong>
                 {order.shippingPerson.street}
@@ -88,8 +91,8 @@ export default function(props) {
         <Actions id="payment-status-actions">
           <ActionsGroup>
             <ActionsLabel >Change payment status</ActionsLabel>
-            <ActionsButton onClick={() => updateOrderStatus(props.f7route.params.id, order.fulfillmentStatus, "AWAITING_PAYMENT")}>Awaiting payment</ActionsButton>
-            <ActionsButton onClick={() => updateOrderStatus(props.f7route.params.id, order.fulfillmentStatus, "PAID")}>Paid</ActionsButton>
+            <ActionsButton onClick={() => updateOrderStatus(order.id, order.fulfillmentStatus, "AWAITING_PAYMENT")}>Awaiting payment</ActionsButton>
+            <ActionsButton onClick={() => updateOrderStatus(order.id, order.fulfillmentStatus, "PAID")}>Paid</ActionsButton>
           </ActionsGroup>
           <ActionsGroup>
             <ActionsButton color="red">Cancel</ActionsButton>

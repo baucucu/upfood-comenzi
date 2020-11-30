@@ -33,14 +33,6 @@ var routes = [
     path: '/form/',
     component: FormPage,
   },
-  // {
-  //   path: '/catalog/',
-  //   component: CatalogPage,
-  // },
-  {
-    path: '/product/:id/',
-    component: ProductPage,
-  },
   {
     path: '/settings/',
     component: SettingsPage,
