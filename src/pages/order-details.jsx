@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import { Actions, ActionsGroup, ActionsLabel, ActionsButton, Button, List, Page, Card,CardContent, CardHeader, CardFooter, Navbar, BlockTitle, Block, ListItem } from 'framework7-react';
-import moment from 'moment';
 import _ from 'lodash';
 
 var dateFormat = "YYYY-M-D";
@@ -30,7 +29,7 @@ export default function(props) {
         "paymentStatus" : paymentStatus,
       })
     };
-    const url = `https://app.ecwid.com/api/v3/39042093/orders/${id}?token=${process.env.TOKEN}`;
+    const url = `https://app.ecwid.com/api/v3/39042093/orders/${id}?token=secret_aSPm45zBRYXfkiribm58TDtgKqdVwEn7`;
     
     await fetch(url,options)
       .then(response =>response.json())

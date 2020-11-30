@@ -11,7 +11,7 @@ export default function(props) {
   const [filters, setFilters] = useState(['AWAITING_PAYMENT','CANCELLED','AWAITING_PROCESSING','PROCESSING','SHIPPED','RETURNED'])
   
   useEffect(() => {  
-    console.log(process.env.TOKEN)
+    console.log("token: ",process.env.TOKEN)
     fetch(`https://app.ecwid.com/api/v3/39042093/orders?token=${process.env.TOKEN}`,)
       .then(response => response.json())
       .then(data => {
