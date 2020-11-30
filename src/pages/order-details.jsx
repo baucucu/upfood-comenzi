@@ -7,6 +7,7 @@ export default function(props) {
   
   useEffect(() => {
     getOrderById(props.f7route.params.id);
+    console.log(order.createDate)
   },[])
 
   const [order, setOrder] = useState({});
@@ -30,7 +31,7 @@ export default function(props) {
     await fetch(url,options)
       .then(response =>response.json())
       .then(data => {
-        console.log(data);
+        // console.log(data);
         getOrderById(id);
       })
       .catch(e => console.log(e))
@@ -55,7 +56,7 @@ export default function(props) {
             {_.has(order, 'shippingPerson') ? <CardHeader>{order.shippingPerson.name}: {order.shippingPerson.phone}</CardHeader> : null}
             <CardContent>
               
-              <Block strong>{moment(order.createDate.replace('0000','0200')).format('D MMM YYYY')}: {moment(order.createDate).format('HH:mm')}</Block>
+              <Block strong>{moment(order.createDate.replace('0000','0200')).format('D MMM YYYY')}: {moment(order.createDate.replace('0000','0200')).format('HH:mm')}</Block>
              
               {_.has(order, 'shippingPerson') ? <Block strong>
                 {order.shippingPerson.street}

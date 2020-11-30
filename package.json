@@ -9,7 +9,7 @@
   },
   "license": "UNLICENSED",
   "scripts": {
-    "start": "npm run dev && node -r dotenv/config src/app.js",
+    "start": "npm run dev",
     "dev": "cross-env NODE_ENV=development webpack-dev-server --config ./build/webpack.config.js",
     "build-dev": "cross-env NODE_ENV=development node ./build/build.js",
     "build-prod": "cross-env NODE_ENV=production node ./build/build.js",
