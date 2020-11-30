@@ -44,7 +44,7 @@ export default function(props) {
   }
 
   const groupOrders = (orders) => {
-    let result = orders.map(order => new Date(order.dateCreated.replace('-','/'),"YYYY/MM/DD"))
+    let result = orders.map(order => new Date(order.dateCreated,"YYYY/MM/DD"))
     let filteredResult = _.uniq(result)
     return filteredResult
   }
