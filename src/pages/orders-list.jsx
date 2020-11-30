@@ -5,7 +5,7 @@ import moment from 'moment';
 import _ from 'lodash';
 import { f7, f7ready } from 'framework7-react';
 
-var dateFormat = "YYYY-M-D";
+var dateFormat = "YYYY/MM/DD";
 var timeFormat = "HH:mm";
 var region = 'Europe/Bucharest';
 
@@ -19,7 +19,6 @@ export default function(props) {
       .then(response => response.json())
       .then(data => {
         setOrders(data.items);
-        // setLoading(false);
       })
   },[])
 
@@ -28,32 +27,25 @@ export default function(props) {
       var smartSelect = f7.smartSelect.get('.smart-select');
       smartSelect.app.on('smartSelectClosed',(ss) => {
         let newFilters = ss.getValue()
-        // console.log('newFilters', newFilters)
         setFilters([...newFilters])
-        // console.log('filters',filters)
       })
     })
   },[])
 
   useEffect(() => {
-    // console.log('useEffect triggered', orders.length, filters)
     const newOrders = filterOrders()
-    // console.log('filtered orders',newOrders)
   })
 
   const searchbarSearch = (searchbar,query,prevQuery) => {
-    // console.log(q)
   }
 
   const filterOrders = () => {
-    // if(orders.length > 0)console.log('filtering started with ',orders.length, orders[0].paymentStatus,orders[0].fulfillmentStatus,_.includes(filters, orders[0].paymentStatus) || _.includes(filters,orders[0].fulfillmentStatus))
     return orders.filter(order =>  _.includes(filters, order.paymentStatus) || _.includes(filters,order.fulfillmentStatus) )
   }
 
   const groupOrders = (orders) => {
-    let result = orders.map(order => moment.tz(order.createDate,dateFormat,region))
+    let result = orders.map(order => new Date(order.dateCreated,"YYYY/MM/DD"))
     let filteredResult = _.uniq(result)
-    // console.log(filteredResult)
     return filteredResult
   }
 
@@ -107,10 +99,10 @@ export default function(props) {
               return(
                 <ListGroup mediaList key={index}>
                   <ListItem title={group} groupTitle></ListItem>
-                  {filterOrders().map(order => { if(moment(order.createDate).format('D MMM YYYY') === group) return(
+                  {filterOrders().map(order => { if(new Date(order.dateCreated,"YYYY/MM/DD") === group) return(
                     <ListItem
                       key={order.id}
-                      title={'Comanda #' + order.id+' @ '+ moment(order.createDate.replace('0000','0200')).format('HH:mm') + ''}
+                      title={'Comanda #' + order.id+' @ '+ new Date(order.dateCreated,"HH:mm") + ''}
                       subtitle={order.paymentMethod + ': ' + order.paymentStatus + ' | ' + order.fulfillmentStatus }
                       after={order.total+' lei'}
                       link={`/order/${order.id}/`}
