@@ -10,7 +10,6 @@ export default function(props) {
   
   const [orders, setOrders] = useState([])
   const [filters, setFilters] = useState(['AWAITING_PAYMENT','CANCELLED','AWAITING_PROCESSING','PROCESSING','SHIPPED','RETURNED'])
-  // const [loading, setLoading] = useState(true)
   
   useEffect(() => {  
     fetch(`https://app.ecwid.com/api/v3/39042093/orders?token=secret_aSPm45zBRYXfkiribm58TDtgKqdVwEn7`,)
