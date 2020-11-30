@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { Actions, ActionsGroup, ActionsLabel, ActionsButton, Button, List, Page, Card,CardContent, CardHeader, CardFooter, Navbar, BlockTitle, Block, ListItem } from 'framework7-react';
 import _ from 'lodash';
+import moment from 'moment';
 
 var dateFormat = "YYYY-M-D";
 var timeFormat = "HH:mm";
@@ -59,7 +60,7 @@ export default function(props) {
             {_.has(order, 'shippingPerson') ? <CardHeader>{order.shippingPerson.name}: {order.shippingPerson.phone}</CardHeader> : null}
             <CardContent>
               
-              <Block strong>{new Date(order.dateCreated,"YYYY/MM/DD")}: {new Date(order.dateCreated,"HH:mm")}</Block>
+              <Block strong>{moment(order.dateCreated).format("YYYY/MM/DD")}: {moment(order.dateCreated).format("HH:mm")}</Block>
              
               {_.has(order, 'shippingPerson') ? <Block strong>
                 {order.shippingPerson.street}
