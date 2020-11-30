@@ -3,6 +3,10 @@ import { Actions, ActionsGroup, ActionsLabel, ActionsButton, Button, List, Page,
 import moment from 'moment';
 import _ from 'lodash';
 
+var dateFormat = "YYYY-M-D";
+var timeFormat = "HH:mm";
+var region = 'Europe/Bucharest';
+
 export default function(props) {
   
   useEffect(() => {
@@ -56,7 +60,7 @@ export default function(props) {
             {_.has(order, 'shippingPerson') ? <CardHeader>{order.shippingPerson.name}: {order.shippingPerson.phone}</CardHeader> : null}
             <CardContent>
               
-              <Block strong>{moment(new Date(order.createDate.replace('0000','0200'))).format('D MMM YYYY')}: {moment(new Date(order.createDate.replace('0000','0200'))).format('HH:mm')}</Block>
+              <Block strong>{moment.tz(order.createDate,dateFormat,region)}: {moment.tz(order.createDate,timeFormat,region)}</Block>
              
               {_.has(order, 'shippingPerson') ? <Block strong>
                 {order.shippingPerson.street}

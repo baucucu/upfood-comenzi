@@ -5,6 +5,9 @@ import moment from 'moment';
 import _ from 'lodash';
 import { f7, f7ready } from 'framework7-react';
 
+var dateFormat = "YYYY-M-D";
+var timeFormat = "HH:mm";
+var region = 'Europe/Bucharest';
 
 export default function(props) {
   
@@ -48,7 +51,7 @@ export default function(props) {
   }
 
   const groupOrders = (orders) => {
-    let result = orders.map(order => moment(new Date(order.createDate)).format('D MMM YYYY'))
+    let result = orders.map(order => moment.tz(order.createDate,dateFormat,region))
     let filteredResult = _.uniq(result)
     // console.log(filteredResult)
     return filteredResult
