@@ -63,29 +63,31 @@ export default function(props) {
         </Subnavbar>
         
       </Navbar>
-      <List>
-        <ListItem
-          title='Filter orders'
-          smartSelect
-          smartSelectParams={{openIn: 'popup'}}
-          className='smart-select smart-select-init'
-        >
-          <select name='filter' multiple defaultValue={filters}>
-            <optgroup label='PAYMENT STATUS'>
-              <option value='PAID'>PAID</option>
-              <option value='AWAITING_PAYMENT'>AWAITING_PAYMENT</option>
-              <option value='CANCELLED'>CANCELLED</option>
-            </optgroup>
-            <optgroup label='FULFILLMENT STATUS'>
-              <option value='AWAITING_PROCESSING'>AWAITING_PROCESSING</option>
-              <option value='PROCESSING'>PROCESSING</option>
-              <option value='SHIPPED'>SHIPPED</option>
-              <option value='DELIVERED'>DELIVERED</option>
-              <option value='RETURNED'>RETURNED</option>
-            </optgroup>
-          </select>
-        </ListItem>
-      </List>
+      <Card inset>
+        <List>
+          <ListItem
+            title='Filter orders'
+            smartSelect
+            smartSelectParams={{openIn: 'popup'}}
+            className='smart-select smart-select-init'
+          >
+            <select name='filter' multiple defaultValue={filters}>
+              <optgroup label='PAYMENT STATUS'>
+                <option value='PAID'>PAID</option>
+                <option value='AWAITING_PAYMENT'>AWAITING_PAYMENT</option>
+                <option value='CANCELLED'>CANCELLED</option>
+              </optgroup>
+              <optgroup label='FULFILLMENT STATUS'>
+                <option value='AWAITING_PROCESSING'>AWAITING_PROCESSING</option>
+                <option value='PROCESSING'>PROCESSING</option>
+                <option value='SHIPPED'>SHIPPED</option>
+                <option value='DELIVERED'>DELIVERED</option>
+                <option value='RETURNED'>RETURNED</option>
+              </optgroup>
+            </select>
+          </ListItem>
+        </List>
+      </Card>
       
       <Card>
         <BlockTitle>Orders: {filterOrders().length}</BlockTitle>
