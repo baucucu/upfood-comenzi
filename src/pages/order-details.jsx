@@ -26,7 +26,7 @@ export default function(props) {
         "paymentStatus" : paymentStatus,
       })
     };
-    const url = `https://app.ecwid.com/api/v3/39042093/orders/${id}?token=secret_aSPm45zBRYXfkiribm58TDtgKqdVwEn7`;
+    const url = `https://app.ecwid.com/api/v3/39042093/orders/${id}?token=${process.env.TOKEN}`;
     
     await fetch(url,options)
       .then(response =>response.json())
