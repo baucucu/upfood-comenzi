@@ -10,14 +10,12 @@ export default function(props) {
   
   const [orders, setOrders] = useState([])
   const [filters, setFilters] = useState(['AWAITING_PAYMENT','CANCELLED','AWAITING_PROCESSING','PROCESSING','SHIPPED','RETURNED'])
-  // const [loading, setLoading] = useState(true)
   
   useEffect(() => {  
     fetch(`https://app.ecwid.com/api/v3/39042093/orders?token=secret_aSPm45zBRYXfkiribm58TDtgKqdVwEn7`,)
       .then(response => response.json())
       .then(data => {
         setOrders(data.items);
-        // setLoading(false);
       })
   },[])
 
@@ -26,32 +24,25 @@ export default function(props) {
       var smartSelect = f7.smartSelect.get('.smart-select');
       smartSelect.app.on('smartSelectClosed',(ss) => {
         let newFilters = ss.getValue()
-        // console.log('newFilters', newFilters)
         setFilters([...newFilters])
-        // console.log('filters',filters)
       })
     })
   },[])
 
   useEffect(() => {
-    // console.log('useEffect triggered', orders.length, filters)
     const newOrders = filterOrders()
-    // console.log('filtered orders',newOrders)
   })
 
   const searchbarSearch = (searchbar,query,prevQuery) => {
-    // console.log(q)
   }
 
   const filterOrders = () => {
-    // if(orders.length > 0)console.log('filtering started with ',orders.length, orders[0].paymentStatus,orders[0].fulfillmentStatus,_.includes(filters, orders[0].paymentStatus) || _.includes(filters,orders[0].fulfillmentStatus))
     return orders.filter(order =>  _.includes(filters, order.paymentStatus) || _.includes(filters,order.fulfillmentStatus) )
   }
 
   const groupOrders = (orders) => {
-    let result = orders.map(order => moment(order.createDate).format('D MMM YYYY'))
+    let result = orders.map(order => moment(order.createDate).format('YYYY/MM/DD'))
     let filteredResult = _.uniq(result)
-    // console.log(filteredResult)
     return filteredResult
   }
 
@@ -102,7 +93,7 @@ export default function(props) {
               return(
                 <ListGroup mediaList key={index}>
                   <ListItem title={group} groupTitle></ListItem>
-                  {filterOrders().map(order => { if(moment(order.createDate).format('D MMM YYYY') === group) return(
+                  {filterOrders().map(order => { if(moment(order.createDate).format('YYYY/MM/DD') === group) return(
                     <ListItem
                       key={order.id}
                       title={'Comanda #' + order.id+' @ '+ moment(order.createDate.replace('0000','0200')).format('HH:mm') + ''}
