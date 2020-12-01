@@ -4,10 +4,12 @@ import { BlockTitle, Card, Subnavbar, Searchbar, Page, Navbar, List, ListItem, L
 import _ from 'lodash';
 import dateformat from 'dateformat';
 import { f7, f7ready } from 'framework7-react';
+import app from '../components/app';
 
 
 export default function(props) {
   
+  const [app, setApp] = useState()
   const [orders, setOrders] = useState([])
   const [filters, setFilters] = useState(['AWAITING_PAYMENT','CANCELLED','AWAITING_PROCESSING','PROCESSING','SHIPPED','RETURNED'])
   
@@ -21,17 +23,18 @@ export default function(props) {
   },[])
 
   useEffect(() => {
-    f7ready(() => {
-      var smartSelect = f7.smartSelect.get('.smart-select');
-      smartSelect.app.on('smartSelectClosed',(ss) => {
-        let newFilters = ss.getValue()
-        setFilters([...newFilters])
-      })
+    f7ready(() => {      
+      setApp(f7.smartSelect.get('#filters-select').app)
     })
-  },[])
+  })
 
   useEffect(() => {
-    const newOrders = filterOrders()
+    app && app.on('smartSelectClosed',(ss) => {
+        let newFilters = ss.getValue()
+        console.log('newFilters: ',newFilters)
+        setFilters([...newFilters])
+      })
+    return () => {app && app.off('smartSelectClosed')}
   })
 
   const searchbarSearch = (searchbar,query,prevQuery) => {
@@ -74,8 +77,9 @@ export default function(props) {
           <ListItem
             title='Filter orders'
             smartSelect
-            smartSelectParams={{openIn: 'popup'}}
+            smartSelectParams={{openIn: 'page'}}
             className='smart-select smart-select-init'
+            id="filters-select"
           >
             <select name='filter' multiple defaultValue={filters}>
               <optgroup label='PAYMENT STATUS'>

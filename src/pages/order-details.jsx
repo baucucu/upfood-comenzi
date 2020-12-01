@@ -18,7 +18,6 @@ export default function(props) {
   },[])
 
   const [order, setOrder] = useState(props.f7route.context.order);
-  // const [loading,setLoading] = useState(true)
 
   const updateOrderStatus = async(id, fulfillmentStatus, paymentStatus) => {
     const options = {
@@ -49,7 +48,6 @@ export default function(props) {
       .then(response => response.json())
       .then(data => {
         setOrder(data);
-        setLoading(false);
       })
       .catch(e => console.log(e))
   }
@@ -57,43 +55,92 @@ export default function(props) {
     return (
       <Page name="order">
         <Navbar title={'Comanda #' + order.id} backLink="Back" />
-        
+        <BlockTitle strong>{convertDateToString(order.createDate).date}, {convertDateToString(order.createDate).time}</BlockTitle>
+        {!_.has(order, 'shippingPerson') ? null : 
+        <Card> 
+          <CardHeader>{order.shippingPerson.name}</CardHeader>
+          <CardContent>
+            <List>
+              <ListItem title={order.shippingPerson.phone}></ListItem>
+              <ListItem title={order.shippingPerson.street}></ListItem>
+            </List>
+          </CardContent>
+          
+        </Card>}
+        <BlockTitle strong>Status</BlockTitle>
         <Card>
-            {_.has(order, 'shippingPerson') ? <CardHeader>{order.shippingPerson.name}: {order.shippingPerson.phone}</CardHeader> : null}
+          <CardHeader>{order.paymentMethod}</CardHeader>
+          <CardContent>
+            <List>
+            <ListItem 
+                  title={'Payment'}
+                  smartSelect
+                  smartSelectParams={{openIn: 'page'}}
+                  className='smart-select smart-select-init'
+                  id='payment-select'
+                >
+                  <select name='paymentStatus' defaultValue={order.paymentStatus}>
+                    <optgroup label='PAYMENT STATUS'>
+                      <option value='PAID'>PAID</option>
+                      <option value='AWAITING_PAYMENT'>AWAITING_PAYMENT</option>
+                      <option value='CANCELLED'>CANCELLED</option>
+                    </optgroup>
+                  </select>
+                </ListItem>
+              <ListItem 
+                  title={'Fulfillment'}
+                  smartSelect
+                  smartSelectParams={{openIn: 'page'}}
+                  className='smart-select smart-select-init'
+                  id='fulfillment-select'
+                >
+                  <select name='fulfillmentStatus' defaultValue={order.fulfillmentStatus}>
+                    <optgroup label='FULFILLMENT STATUS'>
+                      <option value='AWAITING_PROCESSING'>AWAITING_PROCESSING</option>
+                      <option value='PROCESSING'>PROCESSING</option>
+                      <option value='SHIPPED'>SHIPPED</option>
+                      <option value='DELIVERED'>DELIVERED</option>
+                      <option value='RETURNED'>RETURNED</option>
+                    </optgroup>
+                  </select>
+                </ListItem>
+              
+            </List>
+          </CardContent>
+        </Card>
+        <BlockTitle strong>Items</BlockTitle>
+        <Card>
             <CardContent>
-              
-              <Block strong>{convertDateToString(order.createDate).date}, {convertDateToString(order.createDate).time}</Block>
-             
-              {_.has(order, 'shippingPerson') ? <Block strong>
-                {order.shippingPerson.street}
-              </Block> : null}
-             
-              <BlockTitle strong>Items</BlockTitle>
-              
               <List accordionList>
                 {order.items.map((item, index) => 
                   <ListItem 
-                    accordionItem
+                    accordionItem = {_.has(item,'selectedOptions')}
                     key={index} 
                     title={item.quantity + ' x ' + item.name + ' @ ' + item.price + ' lei'}
                   >
                     <AccordionContent>
                       <Block>
-                      {_.has(item,'selectedOptions') ? 
-                          item.selectedOptions.map((option, index) =>  <p key={index} >{option.name}: {option.value}</p>) 
+                      {_.has(item,'selectedOptions') ?
+                        <div>
+                          {item.selectedOptions.map((option, index) =>  <p key={index} >{option.name}: {option.value}</p>) }
+                        </div> 
                         : null}
                       </Block>
                     </AccordionContent>
                   </ListItem>)}
               </List>
-              
-              <Block strong>{'Total: '+order.total+' lei'}</Block>
+
             </CardContent>
-            
             <CardFooter>
-                <Button fill actionsOpen="#fulfillment-status-actions" >{order.fulfillmentStatus}</Button>
-                <Button fill actionsOpen="#payment-status-actions" >{order.paymentMethod + ': ' + order.paymentStatus}</Button>
+              <BlockTitle strong>{'Total: '+order.total+' lei'}</BlockTitle>
             </CardFooter>
+          </Card>
+          
+          <Card>
+          <CardFooter>
+            <Button fill actionsOpen="#fulfillment-status-actions" >{order.fulfillmentStatus}</Button>
+            <Button fill actionsOpen="#payment-status-actions" >{order.paymentMethod + ': ' + order.paymentStatus}</Button>
+          </CardFooter>
           </Card>
         <Actions id="payment-status-actions">
           <ActionsGroup>

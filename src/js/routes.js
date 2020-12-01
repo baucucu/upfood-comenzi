@@ -51,20 +51,21 @@ var routes = [
       await fetch(`https://app.ecwid.com/api/v3/39042093/orders/${id}?token=secret_aSPm45zBRYXfkiribm58TDtgKqdVwEn7`,)
         .then(response => response.json())
         .then(data => {
-        // Hide Preloader
-        app.preloader.hide();
-        console.log("order data ", data)
-        // Resolve route to load page
-        resolve(
-          {
-            component: OrderDetailsPage,
-          },
-          {
-            context: {
-              order: data,
+        
+          // Hide Preloader
+          app.preloader.hide();
+          
+          // Resolve route to load page
+          resolve(
+            {
+              component: OrderDetailsPage,
+            },
+            {
+              context: {
+                order: data,
+              }
             }
-          }
-        );
+          );
         })
         .catch(e => console.log(e))
     },
