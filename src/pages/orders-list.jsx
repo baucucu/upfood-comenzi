@@ -10,7 +10,7 @@ import app from '../components/app';
 export default function(props) {
   
   const [app, setApp] = useState()
-  const [orders, setOrders] = useState([])
+  const [orders, setOrders] = useState(props.f7route.context.orders)
   const [filters, setFilters] = useState(['AWAITING_PAYMENT','CANCELLED','AWAITING_PROCESSING','PROCESSING','SHIPPED','RETURNED'])
   
   useEffect(() => {  

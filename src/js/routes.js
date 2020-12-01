@@ -30,7 +30,41 @@ var routes = [
   },
   {
     path: '/orders/',
-    component: OrdersPage,
+    // component: OrdersPage,
+    async: async function (routeTo, routeFrom, resolve, reject) {
+      // Router instance
+      var router = this;
+
+      // App instance
+      var app = router.app;
+
+      // Show Preloader
+      app.preloader.show();
+
+      // User ID from request
+      var id = routeTo.params.id;
+
+      await fetch(`https://app.ecwid.com/api/v3/39042093/orders?token=secret_aSPm45zBRYXfkiribm58TDtgKqdVwEn7`,)
+        .then(response => response.json())
+        .then(data => {
+        
+          // Hide Preloader
+          app.preloader.hide();
+          
+          // Resolve route to load page
+          resolve(
+            {
+              component: OrdersPage,
+            },
+            {
+              context: {
+                orders: data.items,
+              }
+            }
+          );
+        })
+        .catch(e => console.log(e))
+    },
   },
   {
     path: '/order/:id/',

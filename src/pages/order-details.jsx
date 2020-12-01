@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { Actions, ActionsGroup, ActionsLabel, ActionsButton, Button, List, Page, Card,CardContent, CardHeader, CardFooter, Navbar, BlockTitle, Block, ListItem, AccordionContent } from 'framework7-react';
+import { f7, f7ready } from 'framework7-react';
 import _ from 'lodash';
 import dateformat from 'dateformat';
 
@@ -11,13 +12,27 @@ const convertDateToString = (date) => {
 }
 
 export default function(props) {
-  
-  useEffect(() => {
-    // getOrderById(props.f7route.params.id);
-    console.log(props.f7route.context.order)
-  },[])
 
+  const [app,setApp] = useState();
   const [order, setOrder] = useState(props.f7route.context.order);
+
+  useEffect(() => {
+    f7ready(() => {      
+      setApp(f7.smartSelect.get('#payment-select').app)
+    })
+  })
+
+  useEffect(() => {
+    app && app.on('smartSelectClosed',(ss) => {
+        let value = ss.getValue()
+        let id = ss.selectName
+        let newPaymentStatus = id == "paymentStatus" ? value : order.paymentStatus
+        let newFulfillmentStatus = id == "fulfillmentStatus" ? value : order.fulfillmentStatus
+        let dif = order[id] !== value
+        dif ? updateOrderStatus(order.id, newFulfillmentStatus, newPaymentStatus ) : console.log("no status change")
+      })
+    return () => {app && app.off('smartSelectClosed')}
+  })
 
   const updateOrderStatus = async(id, fulfillmentStatus, paymentStatus) => {
     const options = {
@@ -135,37 +150,6 @@ export default function(props) {
               <BlockTitle strong>{'Total: '+order.total+' lei'}</BlockTitle>
             </CardFooter>
           </Card>
-          
-          <Card>
-          <CardFooter>
-            <Button fill actionsOpen="#fulfillment-status-actions" >{order.fulfillmentStatus}</Button>
-            <Button fill actionsOpen="#payment-status-actions" >{order.paymentMethod + ': ' + order.paymentStatus}</Button>
-          </CardFooter>
-          </Card>
-        <Actions id="payment-status-actions">
-          <ActionsGroup>
-            <ActionsLabel >Change payment status</ActionsLabel>
-            <ActionsButton onClick={() => updateOrderStatus(order.id, order.fulfillmentStatus, "AWAITING_PAYMENT")}>Awaiting payment</ActionsButton>
-            <ActionsButton onClick={() => updateOrderStatus(order.id, order.fulfillmentStatus, "PAID")}>Paid</ActionsButton>
-          </ActionsGroup>
-          <ActionsGroup>
-            <ActionsButton color="red">Cancel</ActionsButton>
-          </ActionsGroup>
-        </Actions>
-
-        <Actions id="fulfillment-status-actions">
-          <ActionsGroup>
-            <ActionsLabel >Change fulfillment status</ActionsLabel>
-            <ActionsButton onClick={() => updateOrderStatus(props.f7route.params.id, "AWAITING_PROCESSING", order.paymentStatus)}>Awaiting processing</ActionsButton>
-            <ActionsButton onClick={() => updateOrderStatus(props.f7route.params.id, "PROCESSING", order.paymentStatus)}>Processing</ActionsButton>
-            <ActionsButton onClick={() => updateOrderStatus(props.f7route.params.id, "SHIPPED", order.paymentStatus)}>Shipped</ActionsButton>
-            <ActionsButton onClick={() => updateOrderStatus(props.f7route.params.id, "DELIVERED", order.paymentStatus)}>Delivered</ActionsButton>
-            <ActionsButton onClick={() => updateOrderStatus(props.f7route.params.id, "RETURNED", order.paymentStatus)}>Returned</ActionsButton>
-          </ActionsGroup>
-          <ActionsGroup>
-            <ActionsButton color="red">Cancel</ActionsButton>
-          </ActionsGroup>
-        </Actions>
       </Page>
     );
   }
