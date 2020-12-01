@@ -18,6 +18,19 @@ export default function(props) {
       setApp(f7.smartSelect.get('#filters-select').app)
     })
   })
+
+  useEffect(() => {
+    app && app.on('ptrRefresh',async (ptr) => {
+      
+      await fetch(`https://app.ecwid.com/api/v3/39042093/orders?token=secret_aSPm45zBRYXfkiribm58TDtgKqdVwEn7`,)
+        .then(response => response.json())
+        .then(data => {
+          setOrders(data.items)
+          app.ptr.done()
+        })
+    })
+    return () => {app && app.off('ptrRefresh')}
+  })
   
   useEffect(() => {
     app && app.on('smartSelectClosed',(ss) => {
@@ -49,7 +62,7 @@ export default function(props) {
   }
 
   return (
-    <Page name='orders'>
+    <Page name='orders' ptr>
       <Navbar title='Orders'>
         <Subnavbar inner={false}>
           <Searchbar
@@ -101,8 +114,8 @@ export default function(props) {
                     <ListItem
                       key={order.id}
                       header={order.paymentStatus+'  '+order.fulfillmentStatus}
-                      title={'Comanda #' + order.id+' @ '+ convertDateToString(order.createDate).time + ''}
-                      subtitle={_.has(order,'shippingPerson') ? order.shippingPerson.street : false}
+                      title={'Comanda #' + order.id+' @ '+ convertDateToString(order.createDate).time}
+                      subtitle={_.has(order,'shippingPerson') ? order.shippingPerson.street : ""}
                       after={order.total+' lei'}
                       footer={order.items.length + ' items'}
                       link={`/order/${order.id}/`}

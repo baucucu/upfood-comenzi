@@ -15,6 +15,7 @@ var routes = [
   },
   {
     path: '/orders/',
+    ptr: true,
     // component: OrdersPage,
     async: async function (routeTo, routeFrom, resolve, reject) {
       // Router instance
