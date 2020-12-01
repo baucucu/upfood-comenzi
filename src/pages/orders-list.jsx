@@ -113,9 +113,9 @@ export default function(props) {
                   {filterOrders().map(order => { if(convertDateToString(order.createDate).date === group) return(
                     <ListItem
                       key={order.id}
-                      header={order.paymentStatus+'  '+order.fulfillmentStatus}
+                      subtitle={order.paymentStatus+'  '+order.fulfillmentStatus}
                       title={'Comanda #' + order.id+' @ '+ convertDateToString(order.createDate).time}
-                      subtitle={_.has(order,'shippingPerson') ? order.shippingPerson.street : ""}
+                      // {_.has(order,'shippingPerson') ? subtitle=order.shippingPerson.street : null}
                       after={order.total+' lei'}
                       footer={order.items.length + ' items'}
                       link={`/order/${order.id}/`}
