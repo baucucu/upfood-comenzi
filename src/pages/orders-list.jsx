@@ -21,12 +21,12 @@ export default function(props) {
 
   useEffect(() => {
     app && app.on('ptrRefresh',async (ptr) => {
-      
+      console.log('refresh orders')
       await fetch(`https://app.ecwid.com/api/v3/39042093/orders?token=secret_aSPm45zBRYXfkiribm58TDtgKqdVwEn7`,)
         .then(response => response.json())
         .then(data => {
           setOrders(data.items)
-          app.ptr.done()
+          app.ptr.done(ptr)
         })
     })
     return () => {app && app.off('ptrRefresh')}
@@ -69,7 +69,7 @@ export default function(props) {
             onSearchbarSearch ={searchbarSearch}
             searchContainer='.search-list'
             searchItem='li'
-            searchIn='.item-title , .item-subtitle'
+            searchIn='.item-title , .item-subtitle, .item-footer, .item-header'
           ></Searchbar>
           
         </Subnavbar>
@@ -114,10 +114,10 @@ export default function(props) {
                     <ListItem
                       key={order.id}
                       subtitle={order.paymentStatus+'  '+order.fulfillmentStatus}
-                      title={'Comanda #' + order.id+' @ '+ convertDateToString(order.createDate).time}
-                      // {_.has(order,'shippingPerson') ? subtitle=order.shippingPerson.street : null}
+                      title={'Comanda #' + order.id}
                       after={order.total+' lei'}
-                      footer={order.items.length + ' items'}
+                      header={convertDateToString(order.createDate).time}
+                      footer={_.has(order,'shippingPerson') ? order.shippingPerson.street : 'no delivery'}
                       link={`/order/${order.id}/`}
                       noChevron={true}
                     ></ListItem>)

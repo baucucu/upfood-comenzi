@@ -65,7 +65,7 @@ export default function(props) {
   }
 
     return (
-      <Page name="order">
+      <Page name="order" >
         <Navbar title={'Comanda #' + order.id} backLink="Back" />
         <BlockTitle strong>{convertDateToString(order.createDate).date}, {convertDateToString(order.createDate).time}</BlockTitle>
         {!_.has(order, 'shippingPerson') ? null : 
