@@ -47,7 +47,7 @@ var routes = [
       await fetch(`https://app.ecwid.com/api/v3/39042093/orders?token=secret_aSPm45zBRYXfkiribm58TDtgKqdVwEn7`,)
         .then(response => response.json())
         .then(data => {
-        
+          console.log(data.items)
           // Hide Preloader
           app.preloader.hide();
           

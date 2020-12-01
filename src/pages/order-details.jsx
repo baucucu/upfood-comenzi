@@ -96,9 +96,9 @@ export default function(props) {
                 >
                   <select name='paymentStatus' defaultValue={order.paymentStatus}>
                     <optgroup label='PAYMENT STATUS'>
-                      <option value='PAID'>PAID</option>
-                      <option value='AWAITING_PAYMENT'>AWAITING_PAYMENT</option>
                       <option value='CANCELLED'>CANCELLED</option>
+                      <option value='AWAITING_PAYMENT'>AWAITING_PAYMENT</option>
+                      <option value='PAID'>PAID</option>
                     </optgroup>
                   </select>
                 </ListItem>
