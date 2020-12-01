@@ -39,25 +39,6 @@ export default class extends React.Component {
         // App root data
         data: function () {
           return {
-
-            // Demo products for Catalog section
-            products: [
-              {
-                id: '1',
-                title: 'Apple iPhone 8',
-                description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nisi tempora similique reiciendis, error nesciunt vero, blanditiis pariatur dolor, minima sed sapiente rerum, dolorem corrupti hic modi praesentium unde saepe perspiciatis.'
-              },
-              {
-                id: '2',
-                title: 'Apple iPhone 8 Plus',
-                description: 'Velit odit autem modi saepe ratione totam minus, aperiam, labore quia provident temporibus quasi est ut aliquid blanditiis beatae suscipit odio vel! Nostrum porro sunt sint eveniet maiores, dolorem itaque!'
-              },
-              {
-                id: '3',
-                title: 'Apple iPhone X',
-                description: 'Expedita sequi perferendis quod illum pariatur aliquam, alias laboriosam! Vero blanditiis placeat, mollitia necessitatibus reprehenderit. Labore dolores amet quos, accusamus earum asperiores officiis assumenda optio architecto quia neque, quae eum.'
-              },
-            ]
           };
         },
 
@@ -78,42 +59,42 @@ export default class extends React.Component {
       <App params={ this.state.f7params } >
 
         {/* Left panel with cover effect*/}
-        <Panel left cover themeDark>
+        {/* <Panel left cover themeDark>
           <View>
             <Page>
               <Navbar title="Left Panel"/>
               <Block>Left panel content goes here</Block>
             </Page>
           </View>
-        </Panel>
+        </Panel> */}
 
 
         {/* Right panel with reveal effect*/}
-        <Panel right reveal themeDark>
+        {/* <Panel right reveal themeDark>
           <View>
             <Page>
               <Navbar title="Right Panel"/>
               <Block>Right panel content goes here</Block>
             </Page>
           </View>
-        </Panel>
+        </Panel> */}
 
 
         {/* Views/Tabs container */}
         <Views tabs className="safe-areas">
           {/* Tabbar for switching views-tabs */}
           <Toolbar tabbar labels bottom>
-            <Link tabLink="#view-home" tabLinkActive iconIos="f7:house_fill" iconAurora="f7:house_fill" iconMd="material:home" text="Home" />
+            {/* <Link tabLink="#view-home" tabLinkActive iconIos="f7:house_fill" iconAurora="f7:house_fill" iconMd="material:home" text="Home" /> */}
             <Link tabLink="#view-orders" iconIos="f7:cart_fill" iconAurora="f7:cart_fill" iconMd="material:shopping_cart" text="Orders" />
             {/* <Link tabLink="#view-catalog" iconIos="f7:square_list_fill" iconAurora="f7:square_list_fill" iconMd="material:view_list" text="Catalog" /> */}
             <Link tabLink="#view-settings" iconIos="f7:gear" iconAurora="f7:gear" iconMd="material:settings" text="Settings" />
           </Toolbar>
 
           {/* Your main view/tab, should have "view-main" class. It also has "tabActive" prop */}
-          <View id="view-home" main tab tabActive url="/" />
+          {/* <View id="view-home" main tab tabActive url="/" /> */}
 
           {/* Orders View */}
-          <View id="view-orders" name="orders" tab url="/orders/" />
+          <View id="view-orders" main tab tabActive name="orders" tab url="/orders/" />
 
           {/* Settings View */}
           <View id="view-settings" name="settings" tab url="/settings/" />
@@ -121,7 +102,7 @@ export default class extends React.Component {
         </Views>
 
         {/* Popup */}
-        <Popup id="my-popup">
+        {/* <Popup id="my-popup">
           <View>
             <Page>
               <Navbar title="Popup">
@@ -134,7 +115,7 @@ export default class extends React.Component {
               </Block>
             </Page>
           </View>
-        </Popup>
+        </Popup> */}
 
         <LoginScreen id="my-login-screen">
           <View>

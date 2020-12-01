@@ -52,17 +52,6 @@ export default function(props) {
     await fetch(url,options)
       .then(response =>response.json())
       .then(data => {
-        // console.log(data);
-        getOrderById(id);
-      })
-      .catch(e => console.log(e))
-  }
-
-  const getOrderById = async(id) => {
-    await fetch(`https://app.ecwid.com/api/v3/39042093/orders/${id}?token=secret_aSPm45zBRYXfkiribm58TDtgKqdVwEn7`,)
-      .then(response => response.json())
-      .then(data => {
-        setOrder(data);
       })
       .catch(e => console.log(e))
   }
