@@ -23,15 +23,23 @@ export default function(props) {
   })
 
   useEffect(() => {
-    app && app.on('smartSelectClosed',(ss) => {
+    app && app.on('smartSelectClosed',async function(ss) {
         let value = ss.getValue()
         let id = ss.selectName
         let newPaymentStatus = id == "paymentStatus" ? value : order.paymentStatus
         let newFulfillmentStatus = id == "fulfillmentStatus" ? value : order.fulfillmentStatus
         let dif = order[id] !== value
-        dif ? updateOrderStatus(order.id, newFulfillmentStatus, newPaymentStatus ) : console.log("no status change")
-      })
-    return () => {app && app.off('smartSelectClosed')}
+        dif && updateOrderStatus(order.id, newFulfillmentStatus, newPaymentStatus )
+        .then(async function() {
+          await fetch(`https://app.ecwid.com/api/v3/39042093/orders/${order.id}?token=secret_aSPm45zBRYXfkiribm58TDtgKqdVwEn7`,)
+            .then(response => response.json())
+            .then(data => {
+              setOrder(data)
+              app.dialog.alert("Order status was updated")
+            })  
+        })
+        return () => {app && app.off('smartSelectClosed')}
+    })
   })
 
   const updateOrderStatus = async(id, fulfillmentStatus, paymentStatus) => {
@@ -136,7 +144,7 @@ export default function(props) {
 
             </CardContent>
             <CardFooter>
-              <BlockTitle strong>{'Total: '+order.total+' lei'}</BlockTitle>
+              {'Total: '+order.total+' lei'}
             </CardFooter>
           </Card>
       </Page>

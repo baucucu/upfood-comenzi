@@ -18,7 +18,7 @@ export default function(props) {
       setApp(f7.smartSelect.get('#filters-select').app)
     })
   })
-
+  
   useEffect(() => {
     app && app.on('smartSelectClosed',(ss) => {
         let newFilters = ss.getValue()
@@ -62,39 +62,35 @@ export default function(props) {
         </Subnavbar>
         
       </Navbar>
-      {/* <Card inset> */}
-        <List>
-          <ListItem
-            title='Filter orders'
-            smartSelect
-            smartSelectParams={{openIn: 'page'}}
-            className='smart-select smart-select-init'
-            id="filters-select"
-          >
-            <select name='filter' multiple defaultValue={filters}>
-              <optgroup label='PAYMENT STATUS'>
-                <option value='PAID'>PAID</option>
-                <option value='AWAITING_PAYMENT'>AWAITING_PAYMENT</option>
-                <option value='CANCELLED'>CANCELLED</option>
-              </optgroup>
-              <optgroup label='FULFILLMENT STATUS'>
-                <option value='AWAITING_PROCESSING'>AWAITING_PROCESSING</option>
-                <option value='PROCESSING'>PROCESSING</option>
-                <option value='SHIPPED'>SHIPPED</option>
-                <option value='DELIVERED'>DELIVERED</option>
-                <option value='RETURNED'>RETURNED</option>
-              </optgroup>
-            </select>
-          </ListItem>
-        </List>
-      {/* </Card> */}
-      
+      <List>
+        <ListItem
+          title='Filter orders'
+          smartSelect
+          smartSelectParams={{openIn: 'page'}}
+          className='smart-select smart-select-init'
+          id="filters-select"
+        >
+          <select name='filter' multiple defaultValue={filters}>
+            <optgroup label='PAYMENT STATUS'>
+              <option value='PAID'>PAID</option>
+              <option value='AWAITING_PAYMENT'>AWAITING_PAYMENT</option>
+              <option value='CANCELLED'>CANCELLED</option>
+            </optgroup>
+            <optgroup label='FULFILLMENT STATUS'>
+              <option value='AWAITING_PROCESSING'>AWAITING_PROCESSING</option>
+              <option value='PROCESSING'>PROCESSING</option>
+              <option value='SHIPPED'>SHIPPED</option>
+              <option value='DELIVERED'>DELIVERED</option>
+              <option value='RETURNED'>RETURNED</option>
+            </optgroup>
+          </select>
+        </ListItem>  
+      </List>
       <BlockTitle>Orders: {filterOrders().length}</BlockTitle>
-      <Card>
+      <Card >
         <List className='searchbar-not-found'>
           <ListItem title='Nothing found' />
         </List>
-        
         <List mediaList className='search-list searchbar-found'>
             {groupOrders(filterOrders()).map((group, index) => {
               return(
@@ -104,9 +100,11 @@ export default function(props) {
                   {filterOrders().map(order => { if(convertDateToString(order.createDate).date === group) return(
                     <ListItem
                       key={order.id}
+                      header={order.paymentStatus+'  '+order.fulfillmentStatus}
                       title={'Comanda #' + order.id+' @ '+ convertDateToString(order.createDate).time + ''}
-                      subtitle={order.paymentMethod + ': ' + order.paymentStatus + ' | ' + order.fulfillmentStatus }
+                      subtitle={_.has(order,'shippingPerson') ? order.shippingPerson.street : false}
                       after={order.total+' lei'}
+                      footer={order.items.length + ' items'}
                       link={`/order/${order.id}/`}
                       noChevron={true}
                     ></ListItem>)
