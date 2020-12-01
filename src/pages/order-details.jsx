@@ -1,11 +1,14 @@
 import React, {useEffect, useState} from 'react';
-import { Actions, ActionsGroup, ActionsLabel, ActionsButton, Button, List, Page, Card,CardContent, CardHeader, CardFooter, Navbar, BlockTitle, Block, ListItem } from 'framework7-react';
+import { Actions, ActionsGroup, ActionsLabel, ActionsButton, Button, List, Page, Card,CardContent, CardHeader, CardFooter, Navbar, BlockTitle, Block, ListItem, AccordionContent } from 'framework7-react';
 import _ from 'lodash';
-import moment from 'moment';
+import dateformat from 'dateformat';
 
-var dateFormat = "YYYY-M-D";
-var timeFormat = "HH:mm";
-var region = 'Europe/Bucharest';
+const convertDateToString = (date) => {
+  var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  let newDate = new Date(date).toLocaleDateString("ro-RO", options)
+  let newTime = dateformat(date,"HH:mm")
+  return {date: newDate, time: newTime}
+}
 
 export default function(props) {
   
@@ -60,23 +63,28 @@ export default function(props) {
             {_.has(order, 'shippingPerson') ? <CardHeader>{order.shippingPerson.name}: {order.shippingPerson.phone}</CardHeader> : null}
             <CardContent>
               
-              <Block strong>{moment(order.dateCreated).format("YYYY/MM/DD")}: {moment(order.dateCreated).format("HH:mm")}</Block>
+              <Block strong>{convertDateToString(order.createDate).date}, {convertDateToString(order.createDate).time}</Block>
              
               {_.has(order, 'shippingPerson') ? <Block strong>
                 {order.shippingPerson.street}
               </Block> : null}
              
-              <Block strong>Items</Block>
+              <BlockTitle strong>Items</BlockTitle>
               
-              <List mediaList>
+              <List accordionList>
                 {order.items.map((item, index) => 
                   <ListItem 
+                    accordionItem
                     key={index} 
                     title={item.quantity + ' x ' + item.name + ' @ ' + item.price + ' lei'}
                   >
-                    {_.has(item,'selectedOptions') ? 
-                      item.selectedOptions.map((option, index) =>  <Block key={index} slot='inner'>{option.name}: {option.value}</Block>) 
-                    : null}
+                    <AccordionContent>
+                      <Block>
+                      {_.has(item,'selectedOptions') ? 
+                          item.selectedOptions.map((option, index) =>  <p key={index} >{option.name}: {option.value}</p>) 
+                        : null}
+                      </Block>
+                    </AccordionContent>
                   </ListItem>)}
               </List>
               
