@@ -6,19 +6,19 @@ import dateformat from 'dateformat';
 const convertDateToString = (date) => {
   var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
   let newDate = new Date(date).toLocaleDateString("ro-RO", options)
-  let newTime = dateformat(date,"HH:mm")
+  let newTime = dateformat(date,"HH:MM")
   return {date: newDate, time: newTime}
 }
 
 export default function(props) {
   
   useEffect(() => {
-    getOrderById(props.f7route.params.id);
-    console.log(order.createDate)
+    // getOrderById(props.f7route.params.id);
+    console.log(props.f7route.context.order)
   },[])
 
-  const [order, setOrder] = useState({});
-  const [loading,setLoading] = useState(true)
+  const [order, setOrder] = useState(props.f7route.context.order);
+  // const [loading,setLoading] = useState(true)
 
   const updateOrderStatus = async(id, fulfillmentStatus, paymentStatus) => {
     const options = {
@@ -58,8 +58,7 @@ export default function(props) {
       <Page name="order">
         <Navbar title={'Comanda #' + order.id} backLink="Back" />
         
-        {loading ? <Block>Loading...</Block>
-        : <Card>
+        <Card>
             {_.has(order, 'shippingPerson') ? <CardHeader>{order.shippingPerson.name}: {order.shippingPerson.phone}</CardHeader> : null}
             <CardContent>
               
@@ -96,7 +95,6 @@ export default function(props) {
                 <Button fill actionsOpen="#payment-status-actions" >{order.paymentMethod + ': ' + order.paymentStatus}</Button>
             </CardFooter>
           </Card>
-        }
         <Actions id="payment-status-actions">
           <ActionsGroup>
             <ActionsLabel >Change payment status</ActionsLabel>

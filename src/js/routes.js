@@ -12,6 +12,13 @@ import DynamicRoutePage from '../pages/dynamic-route.jsx';
 import RequestAndLoad from '../pages/request-and-load.jsx';
 import NotFoundPage from '../pages/404.jsx';
 
+const getOrderById = async(id) => {
+  await fetch(`https://app.ecwid.com/api/v3/39042093/orders/${id}?token=secret_aSPm45zBRYXfkiribm58TDtgKqdVwEn7`,)
+    .then(response => response.json())
+    .then(data => {return data})
+    .catch(e => console.log(e))
+}
+
 var routes = [
   {
     path: '/',
@@ -27,7 +34,40 @@ var routes = [
   },
   {
     path: '/order/:id/',
-    component: OrderDetailsPage,
+    // component: OrderDetailsPage,
+    async: async function (routeTo, routeFrom, resolve, reject) {
+      // Router instance
+      var router = this;
+
+      // App instance
+      var app = router.app;
+
+      // Show Preloader
+      app.preloader.show();
+
+      // User ID from request
+      var id = routeTo.params.id;
+
+      await fetch(`https://app.ecwid.com/api/v3/39042093/orders/${id}?token=secret_aSPm45zBRYXfkiribm58TDtgKqdVwEn7`,)
+        .then(response => response.json())
+        .then(data => {
+        // Hide Preloader
+        app.preloader.hide();
+        console.log("order data ", data)
+        // Resolve route to load page
+        resolve(
+          {
+            component: OrderDetailsPage,
+          },
+          {
+            context: {
+              order: data,
+            }
+          }
+        );
+        })
+        .catch(e => console.log(e))
+    },
   },
   {
     path: '/form/',
