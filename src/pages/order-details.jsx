@@ -87,7 +87,7 @@ export default function(props) {
             <ListItem 
                   title={'Payment'}
                   smartSelect
-                  smartSelectParams={{openIn: 'page'}}
+                  smartSelectParams={{openIn: 'sheet'}}
                   className='smart-select smart-select-init'
                   id='payment-select'
                 >
@@ -102,7 +102,7 @@ export default function(props) {
               <ListItem 
                   title={'Fulfillment'}
                   smartSelect
-                  smartSelectParams={{openIn: 'page'}}
+                  smartSelectParams={{openIn: 'sheet'}}
                   className='smart-select smart-select-init'
                   id='fulfillment-select'
                 >

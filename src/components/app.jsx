@@ -28,8 +28,6 @@ export default class extends React.Component {
       f7params: {
         name: 'UpFood Comenzi Admin', // App name
         theme: 'auto', // Automatic theme detection
-        cache: false,
-
         // App root data
         data: function () {
           return {
@@ -56,15 +54,15 @@ export default class extends React.Component {
         <Views tabs className="safe-areas">
           {/* Tabbar for switching views-tabs */}
           <Toolbar tabbar labels bottom>
-            <Link tabLink="#view-orders" tabLinkActive iconIos="f7:cart_fill" iconAurora="f7:cart_fill" iconMd="material:shopping_cart" text="Orders" />
-            <Link tabLink="#view-settings" iconIos="f7:gear" iconAurora="f7:gear" iconMd="material:settings" text="Settings" />
+            <Link tabLink="#view-orders"  tabLinkActive iconIos="f7:cart_fill" iconAurora="f7:cart_fill" iconMd="material:shopping_cart" text="Orders" />
+            <Link tabLink="#view-settings"  iconIos="f7:gear" iconAurora="f7:gear" iconMd="material:settings" text="Settings" />
           </Toolbar>
 
           {/* Orders View */}
-          <View id="view-orders" main tab tabActive name="orders" tab url="/orders/" />
+          <View id="view-orders"  main tab tabActive name="orders" tab url="/orders/" />
 
           {/* Settings View */}
-          <View id="view-settings" name="settings" tab url="/settings/" />
+          <View id="view-settings"  name="settings" tab url="/settings/" />
 
         </Views>
 

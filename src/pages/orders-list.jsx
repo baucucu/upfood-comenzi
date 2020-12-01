@@ -21,7 +21,6 @@ export default function(props) {
 
   useEffect(() => {
     app && app.on('ptrRefresh',async (ptr) => {
-      console.log('refresh orders')
       await fetch(`https://app.ecwid.com/api/v3/39042093/orders?token=secret_aSPm45zBRYXfkiribm58TDtgKqdVwEn7`,)
         .then(response => response.json())
         .then(data => {
@@ -79,7 +78,7 @@ export default function(props) {
         <ListItem
           title='Filter orders'
           smartSelect
-          smartSelectParams={{openIn: 'page'}}
+          smartSelectParams={{openIn: 'sheet'}}
           className='smart-select smart-select-init'
           id="filters-select"
         >
@@ -112,12 +111,12 @@ export default function(props) {
 
                   {filterOrders().map(order => { if(convertDateToString(order.createDate).date === group) return(
                     <ListItem
-                      key={order.id}
-                      subtitle={order.paymentStatus+'  '+order.fulfillmentStatus}
+                      key={order.id}                      
                       title={'Comanda #' + order.id}
+                      // subtitle={order.paymentStatus+'  '+order.fulfillmentStatus}
                       after={order.total+' lei'}
                       header={convertDateToString(order.createDate).time}
-                      footer={_.has(order,'shippingPerson') ? order.shippingPerson.street : 'no delivery'}
+                      // footer={_.has(order,'shippingPerson') ? order.shippingPerson.street : 'no delivery'}
                       link={`/order/${order.id}/`}
                       noChevron={true}
                     ></ListItem>)
