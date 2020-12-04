@@ -2,9 +2,8 @@ import React from 'react';
 import {useState, useEffect} from 'react';
 import { BlockTitle, Card, Subnavbar, Searchbar, Page, Navbar, List, ListItem, ListGroup } from 'framework7-react';
 import _ from 'lodash';
-import dateformat from 'dateformat';
+import moment from 'moment';
 import { f7, f7ready } from 'framework7-react';
-import app from '../components/app';
 
 
 export default function(props) {
@@ -39,14 +38,15 @@ export default function(props) {
     return () => {app && app.off('smartSelectClosed')}
   })
 
-  const searchbarSearch = (searchbar,query,prevQuery) => {
-  }
+  const searchbarSearch = (searchbar,query,prevQuery) => {}
 
   const convertDateToString = (date) => {
-    var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    let newDate = new Date(date).toLocaleDateString("ro-RO", options)
-    let newTime = dateformat(date,"HH:MM")
-    return {date: newDate, time: newTime}
+    let formatedDate = new Date(date.substring(0,10).replaceAll('-','/')).toDateString()
+    let formatedTime = new Date(date.replaceAll('-','/')).toTimeString()
+    // console.log(formatedDate,formatedTime)
+    // let formatedDate = new Date(date).toUTCString().toString()
+    console.log(formatedTime)
+    return {date: formatedDate, time: formatedTime}
   }
 
   const filterOrders = () => {
@@ -113,10 +113,10 @@ export default function(props) {
                     <ListItem
                       key={order.id}                      
                       title={'Comanda #' + order.id}
-                      // subtitle={order.paymentStatus+'  '+order.fulfillmentStatus}
+                      subtitle={order.paymentStatus+'  '+order.fulfillmentStatus}
                       after={order.total+' lei'}
                       header={convertDateToString(order.createDate).time}
-                      // footer={_.has(order,'shippingPerson') ? order.shippingPerson.street : 'no delivery'}
+                      footer={_.has(order,'shippingPerson') ? order.shippingPerson.street : 'no delivery'}
                       link={`/order/${order.id}/`}
                       noChevron={true}
                     ></ListItem>)

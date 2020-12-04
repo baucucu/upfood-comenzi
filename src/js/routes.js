@@ -16,6 +16,7 @@ var routes = [
   {
     path: '/orders/',
     ptr: true,
+    ignoreCache:true,
     // component: OrdersPage,
     async: async function (routeTo, routeFrom, resolve, reject) {
       // Router instance
@@ -30,7 +31,7 @@ var routes = [
       // User ID from request
       var id = routeTo.params.id;
 
-      await fetch(`https://app.ecwid.com/api/v3/39042093/orders?token=secret_aSPm45zBRYXfkiribm58TDtgKqdVwEn7`,)
+      fetch(`https://app.ecwid.com/api/v3/39042093/orders?token=secret_aSPm45zBRYXfkiribm58TDtgKqdVwEn7`,)
         .then(response => response.json())
         .then(data => {
           
@@ -55,6 +56,7 @@ var routes = [
   {
     path: '/order/:id/',
     // component: OrderDetailsPage,
+    ignoreCache:true,
     async: async function (routeTo, routeFrom, resolve, reject) {
       // Router instance
       var router = this;
@@ -68,7 +70,7 @@ var routes = [
       // User ID from request
       var id = routeTo.params.id;
 
-      await fetch(`https://app.ecwid.com/api/v3/39042093/orders/${id}?token=secret_aSPm45zBRYXfkiribm58TDtgKqdVwEn7`,)
+       fetch(`https://app.ecwid.com/api/v3/39042093/orders/${id}?token=secret_aSPm45zBRYXfkiribm58TDtgKqdVwEn7`,)
         .then(response => response.json())
         .then(data => {
         

@@ -16,9 +16,6 @@ import {
 } from 'framework7-react';
 
 import routes from '../js/routes';
-
-// require('dotenv').config();
-
 export default class extends React.Component {
   constructor() {
     super();
@@ -26,7 +23,7 @@ export default class extends React.Component {
     this.state = {
       // Framework7 Parameters
       f7params: {
-        name: 'UpFood Comenzi Admin', // App name
+        name: 'UpFood Comenzi', // App name
         theme: 'auto', // Automatic theme detection
         // App root data
         data: function () {

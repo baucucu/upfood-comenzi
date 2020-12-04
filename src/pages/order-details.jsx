@@ -1,14 +1,16 @@
 import React, {useEffect, useState} from 'react';
-import { Actions, ActionsGroup, ActionsLabel, ActionsButton, Button, List, Page, Card,CardContent, CardHeader, CardFooter, Navbar, BlockTitle, Block, ListItem, AccordionContent } from 'framework7-react';
+import { List, Page, Card,CardContent, CardHeader, CardFooter, Navbar, BlockTitle, Block, ListItem, AccordionContent } from 'framework7-react';
 import { f7, f7ready } from 'framework7-react';
 import _ from 'lodash';
-import dateformat from 'dateformat';
+import moment from 'moment';
 
 const convertDateToString = (date) => {
-  var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-  let newDate = new Date(date).toLocaleDateString("ro-RO", options)
-  let newTime = dateformat(date,"HH:MM")
-  return {date: newDate, time: newTime}
+  let formatedDate = new Date(date.substring(0,10).replaceAll('-','/')).toDateString()
+  let formatedTime = new Date(date.replaceAll('-','/')).toTimeString()
+  // console.log(formatedDate,formatedTime)
+  // let formatedDate = new Date(date).toUTCString().toString()
+  console.log(formatedTime)
+  return {date: formatedDate, time: formatedTime}
 }
 
 export default function(props) {
@@ -85,37 +87,37 @@ export default function(props) {
           <CardContent>
             <List>
             <ListItem 
-                  title={'Payment'}
-                  smartSelect
-                  smartSelectParams={{openIn: 'sheet'}}
-                  className='smart-select smart-select-init'
-                  id='payment-select'
-                >
-                  <select name='paymentStatus' defaultValue={order.paymentStatus}>
-                    <optgroup label='PAYMENT STATUS'>
-                      <option value='CANCELLED'>CANCELLED</option>
-                      <option value='AWAITING_PAYMENT'>AWAITING_PAYMENT</option>
-                      <option value='PAID'>PAID</option>
-                    </optgroup>
-                  </select>
-                </ListItem>
-              <ListItem 
-                  title={'Fulfillment'}
-                  smartSelect
-                  smartSelectParams={{openIn: 'sheet'}}
-                  className='smart-select smart-select-init'
-                  id='fulfillment-select'
-                >
-                  <select name='fulfillmentStatus' defaultValue={order.fulfillmentStatus}>
-                    <optgroup label='FULFILLMENT STATUS'>
-                      <option value='AWAITING_PROCESSING'>AWAITING_PROCESSING</option>
-                      <option value='PROCESSING'>PROCESSING</option>
-                      <option value='SHIPPED'>SHIPPED</option>
-                      <option value='DELIVERED'>DELIVERED</option>
-                      <option value='RETURNED'>RETURNED</option>
-                    </optgroup>
-                  </select>
-                </ListItem>
+              title={'Payment'}
+              smartSelect
+              smartSelectParams={{openIn: 'page'}}
+              className='smart-select smart-select-init'
+              id='payment-select'
+            >
+              <select name='paymentStatus' defaultValue={order.paymentStatus}>
+                <optgroup label='PAYMENT STATUS'>
+                  <option value='CANCELLED'>CANCELLED</option>
+                  <option value='AWAITING_PAYMENT'>AWAITING_PAYMENT</option>
+                  <option value='PAID'>PAID</option>
+                </optgroup>
+              </select>
+            </ListItem>
+            <ListItem 
+              title={'Fulfillment'}
+              smartSelect
+              smartSelectParams={{openIn: 'page'}}
+              className='smart-select smart-select-init'
+              id='fulfillment-select'
+            >
+              <select name='fulfillmentStatus' defaultValue={order.fulfillmentStatus}>
+                <optgroup label='FULFILLMENT STATUS'>
+                  <option value='AWAITING_PROCESSING'>AWAITING_PROCESSING</option>
+                  <option value='PROCESSING'>PROCESSING</option>
+                  <option value='SHIPPED'>SHIPPED</option>
+                  <option value='DELIVERED'>DELIVERED</option>
+                  <option value='RETURNED'>RETURNED</option>
+                </optgroup>
+              </select>
+            </ListItem>
               
             </List>
           </CardContent>
