@@ -1,5 +1,8 @@
 import React from 'react';
 
+import { createClient } from '@supabase/supabase-js'
+
+
 import {
   App,
   Views,
@@ -42,6 +45,9 @@ export default class extends React.Component {
       username: '',
       password: '',
     }
+
+    const supabase = createClient("https://vqfzqdaycwbxpestlhyu.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYwNzA4MjE1OSwiZXhwIjoxOTIyNjU4MTU5fQ.nXZeUZu9aAOJJyQ6GDrBKsaL8ZtZHMCzctAsQZA8rZQ")
+
   }
   render() {
     return (

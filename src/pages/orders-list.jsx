@@ -2,7 +2,6 @@ import React from 'react';
 import {useState, useEffect} from 'react';
 import { BlockTitle, Card, Subnavbar, Searchbar, Page, Navbar, List, ListItem, ListGroup } from 'framework7-react';
 import _ from 'lodash';
-import moment from 'moment';
 import { f7, f7ready } from 'framework7-react';
 
 
@@ -42,10 +41,8 @@ export default function(props) {
 
   const convertDateToString = (date) => {
     let formatedDate = new Date(date.substring(0,10).replaceAll('-','/')).toDateString()
-    let formatedTime = new Date(date.replaceAll('-','/')).toTimeString()
-    // console.log(formatedDate,formatedTime)
-    // let formatedDate = new Date(date).toUTCString().toString()
-    console.log(formatedTime)
+    let formatedTime = new Date(date.replaceAll('-','/')).toTimeString().substr(0,5)
+    console.log(formatedTime[0])
     return {date: formatedDate, time: formatedTime}
   }
 

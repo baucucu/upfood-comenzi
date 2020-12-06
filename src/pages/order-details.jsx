@@ -2,14 +2,11 @@ import React, {useEffect, useState} from 'react';
 import { List, Page, Card,CardContent, CardHeader, CardFooter, Navbar, BlockTitle, Block, ListItem, AccordionContent } from 'framework7-react';
 import { f7, f7ready } from 'framework7-react';
 import _ from 'lodash';
-import moment from 'moment';
 
 const convertDateToString = (date) => {
   let formatedDate = new Date(date.substring(0,10).replaceAll('-','/')).toDateString()
-  let formatedTime = new Date(date.replaceAll('-','/')).toTimeString()
-  // console.log(formatedDate,formatedTime)
-  // let formatedDate = new Date(date).toUTCString().toString()
-  console.log(formatedTime)
+  let formatedTime = new Date(date.replaceAll('-','/')).toTimeString().substr(0,5)
+  console.log(formatedTime[0])
   return {date: formatedDate, time: formatedTime}
 }
 
