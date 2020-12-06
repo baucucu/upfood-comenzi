@@ -52,4 +52,7 @@
   --f7-navbar-large-title-text-color: #fff;
 }
 
+.chip {
+  margin-right: 2px;
+}
 /* Your app custom styles here */

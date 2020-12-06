@@ -1,14 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import { List, Page, Card,CardContent, CardHeader, CardFooter, Navbar, BlockTitle, Block, ListItem, AccordionContent } from 'framework7-react';
+import { Icon, Link, List, Page, Card,CardContent, CardHeader, CardFooter, Navbar, BlockTitle, Block, ListItem, AccordionContent } from 'framework7-react';
 import { f7, f7ready } from 'framework7-react';
 import _ from 'lodash';
-
-const convertDateToString = (date) => {
-  let formatedDate = new Date(date.substring(0,10).replaceAll('-','/')).toDateString()
-  let formatedTime = new Date(date.replaceAll('-','/')).toTimeString().substr(0,5)
-  console.log(formatedTime[0])
-  return {date: formatedDate, time: formatedTime}
-}
 
 export default function(props) {
 
@@ -23,60 +16,39 @@ export default function(props) {
 
   useEffect(() => {
     app && app.on('smartSelectClosed',async function(ss) {
+      if(ss.selectName == 'paymentStatus' || ss.selectName == 'fulfillmentStatus') {
         let value = ss.getValue()
         let id = ss.selectName
         let newPaymentStatus = id == "paymentStatus" ? value : order.paymentStatus
         let newFulfillmentStatus = id == "fulfillmentStatus" ? value : order.fulfillmentStatus
         let dif = order[id] !== value
-        dif && updateOrderStatus(order.id, newFulfillmentStatus, newPaymentStatus )
+        dif && app && app.methods.updateOrderStatus(order.id, newFulfillmentStatus, newPaymentStatus )
         .then(async function() {
           await fetch(`https://app.ecwid.com/api/v3/39042093/orders/${order.id}?token=secret_aSPm45zBRYXfkiribm58TDtgKqdVwEn7`,)
             .then(response => response.json())
             .then(data => {
               setOrder(data)
-              app.dialog.alert("Order status was updated")
-            })  
+            })
+            .then(() => {app.dialog.alert("Order status was updated")})  
         })
+      }
         return () => {app && app.off('smartSelectClosed')}
     })
   })
 
-  const updateOrderStatus = async(id, fulfillmentStatus, paymentStatus) => {
-    const options = {
-      method: 'PUT', 
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Cache-Control': 'no-cache'
-      },
-      body: JSON.stringify({
-        "fulfillmentStatus" : fulfillmentStatus,
-        "paymentStatus" : paymentStatus,
-      })
-    };
-    const url = `https://app.ecwid.com/api/v3/39042093/orders/${id}?token=secret_aSPm45zBRYXfkiribm58TDtgKqdVwEn7`;
-    
-    await fetch(url,options)
-      .then(response =>response.json())
-      .then(data => {
-      })
-      .catch(e => console.log(e))
-  }
-
     return (
       <Page name="order" >
         <Navbar title={'Comanda #' + order.id} backLink="Back" />
-        <BlockTitle strong>{convertDateToString(order.createDate).date}, {convertDateToString(order.createDate).time}</BlockTitle>
+        <BlockTitle strong>{app && app.methods.convertDateToString(order.createDate).date}, {app && app.methods.convertDateToString(order.createDate).time}</BlockTitle>
         {!_.has(order, 'shippingPerson') ? null : 
         <Card> 
           <CardHeader>{order.shippingPerson.name}</CardHeader>
           <CardContent>
-            <List>
-              <ListItem title={order.shippingPerson.phone}></ListItem>
-              <ListItem title={order.shippingPerson.street}></ListItem>
-            </List>
+          <Link><Icon ios="f7:phone" aurora="f7:phone" md="material:phone"></Icon>{order.shippingPerson.phone}</Link>
           </CardContent>
-          
+          <CardContent>
+            <Link><Icon ios="f7:placemark" aurora="f7:placemark" md="material:placemark"></Icon>{order.shippingPerson.street}</Link>
+          </CardContent>
         </Card>}
         <BlockTitle strong>Status</BlockTitle>
         <Card>

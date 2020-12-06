@@ -33,7 +33,52 @@ export default class extends React.Component {
           return {
           };
         },
+        methods: {
+          convertDateToString: (date) => {
+            let formatedDate = new Date(date.substring(0,10).replaceAll('-','/')).toDateString()
+            let formatedTime = new Date(date.replaceAll('-','/')).toTimeString().substr(0,5)
+            return {date: formatedDate, time: formatedTime}
+          },
+          groupOrders: (orders, app) => {
+            let result = orders.map(order => app.methods.convertDateToString(order.createDate).date)
+            let filteredResult = _.uniq(result)
+            return filteredResult
+          },
+          filterOrders: (orders, filters) => {
+            return orders.filter(order =>  _.includes(filters, order.paymentStatus) || _.includes(filters,order.fulfillmentStatus) )
+          },
+          updateOrderStatus: async(id, fulfillmentStatus, paymentStatus) => {
+            const options = {
+              method: 'PUT', 
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Cache-Control': 'no-cache'
+              },
+              body: JSON.stringify({
+                "fulfillmentStatus" : fulfillmentStatus,
+                "paymentStatus" : paymentStatus,
+              })
+            };
+            const url = `https://app.ecwid.com/api/v3/39042093/orders/${id}?token=secret_aSPm45zBRYXfkiribm58TDtgKqdVwEn7`;
+            
+            await fetch(url,options)
+              .then(response =>response.json())
+              .then(data => {
+              })
+              .catch(e => console.log(e))
+          },
+          searchbarSearch: (searchbar,query,prevQuery) => {
 
+          },
+          getOrders : async () => {await fetch(`https://app.ecwid.com/api/v3/39042093/orders?token=secret_aSPm45zBRYXfkiribm58TDtgKqdVwEn7`,)
+            .then(response => response.json())
+            .then(data => {
+              this.setState({orders:data.items})
+            })
+          },
+        },
+        
         // App routes
         routes: routes,
         // Register service worker
@@ -44,11 +89,16 @@ export default class extends React.Component {
       // Login screen demo data
       username: '',
       password: '',
+      orders:[],
     }
 
-    const supabase = createClient("https://vqfzqdaycwbxpestlhyu.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYwNzA4MjE1OSwiZXhwIjoxOTIyNjU4MTU5fQ.nXZeUZu9aAOJJyQ6GDrBKsaL8ZtZHMCzctAsQZA8rZQ")
+    // const supabase = createClient("https://vqfzqdaycwbxpestlhyu.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYwNzA4MjE1OSwiZXhwIjoxOTIyNjU4MTU5fQ.nXZeUZu9aAOJJyQ6GDrBKsaL8ZtZHMCzctAsQZA8rZQ")
 
   }
+  componentDidMount() {
+    getOrders()
+  }
+
   render() {
     return (
       <App params={ this.state.f7params } >
