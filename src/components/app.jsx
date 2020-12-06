@@ -35,8 +35,10 @@ export default class extends React.Component {
         },
         methods: {
           convertDateToString: (date) => {
-            let formatedDate = new Date(date.substring(0,10).replace('-','/')).toDateString()
-            let formatedTime = new Date(date.replace('-','/')).toTimeString().substr(0,5)
+            
+            let formatedDate = new Date(date.substring(0,10).replace(/-/g,'/')).toDateString()
+            let formatedTime = new Date(date.replace(/-/g,'/')).toTimeString().substr(0,5)
+            console.log()
             return {date: formatedDate, time: formatedTime}
           },
           groupOrders: (orders, app) => {
