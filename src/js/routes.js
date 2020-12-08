@@ -31,7 +31,7 @@ var routes = [
       // User ID from request
       var id = routeTo.params.id;
 
-      fetch(`https://app.ecwid.com/api/v3/39042093/orders?token=secret_aSPm45zBRYXfkiribm58TDtgKqdVwEn7`,)
+      fetch(`https://app.ecwid.com/api/v3/38960101/orders?token=secret_MWWdFUtVHMmkjtFWaaqerrPaCF2rthQT`,)
         .then(response => response.json())
         .then(data => {
           
@@ -70,7 +70,7 @@ var routes = [
       // User ID from request
       var id = routeTo.params.id;
 
-       fetch(`https://app.ecwid.com/api/v3/39042093/orders/${id}?token=secret_aSPm45zBRYXfkiribm58TDtgKqdVwEn7`,)
+       fetch(`https://app.ecwid.com/api/v3/38960101/orders/${id}?token=secret_MWWdFUtVHMmkjtFWaaqerrPaCF2rthQT`,)
         .then(response => response.json())
         .then(data => {
         

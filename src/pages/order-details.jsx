@@ -24,7 +24,7 @@ export default function(props) {
         let dif = order[id] !== value
         dif && app && app.methods.updateOrderStatus(order.id, newFulfillmentStatus, newPaymentStatus )
         .then(async function() {
-          await fetch(`https://app.ecwid.com/api/v3/39042093/orders/${order.id}?token=secret_aSPm45zBRYXfkiribm58TDtgKqdVwEn7`,)
+          await fetch(`https://app.ecwid.com/api/v3/38960101/orders/${order.id}?token=secret_MWWdFUtVHMmkjtFWaaqerrPaCF2rthQT`,)
             .then(response => response.json())
             .then(data => {
               setOrder(data)

@@ -29,7 +29,7 @@ export default function(props) {
 
   useEffect(() => {
     app && app.on('ptrRefresh',async (ptr) => {
-      await fetch(`https://app.ecwid.com/api/v3/39042093/orders?token=secret_aSPm45zBRYXfkiribm58TDtgKqdVwEn7`,)
+      await fetch(`https://app.ecwid.com/api/v3/38960101/orders?token=secret_MWWdFUtVHMmkjtFWaaqerrPaCF2rthQT`,)
         .then(response => response.json())
         .then(data => {
           setOrders(data.items)
