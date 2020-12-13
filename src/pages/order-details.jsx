@@ -1,9 +1,12 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import { Icon, Link, List, Page, Card,CardContent, CardHeader, CardFooter, Navbar, BlockTitle, Block, ListItem, AccordionContent } from 'framework7-react';
 import { f7, f7ready } from 'framework7-react';
 import _ from 'lodash';
 
+
 export default function(props) {
+
+  console.log(props.f7route.context.order)
 
   const [app,setApp] = useState();
   const [order, setOrder] = useState(props.f7route.context.order);
@@ -23,13 +26,13 @@ export default function(props) {
         let newFulfillmentStatus = id == "fulfillmentStatus" ? value : order.fulfillmentStatus
         let dif = order[id] !== value
         dif && app && app.methods.updateOrderStatus(order.id, newFulfillmentStatus, newPaymentStatus )
-        .then(async function() {
-          await fetch(`https://app.ecwid.com/api/v3/38960101/orders/${order.id}?token=secret_MWWdFUtVHMmkjtFWaaqerrPaCF2rthQT`,)
+        .then(function() {
+          fetch(`https://app.ecwid.com/api/v3/38960101/orders/${order.id}?token=secret_MWWdFUtVHMmkjtFWaaqerrPaCF2rthQT`,)
             .then(response => response.json())
             .then(data => {
               setOrder(data)
             })
-            .then(() => {app.dialog.alert("Order status was updated")})  
+            // .then(() => {app.dialog.alert("Order status was updated")})  
         })
       }
         return () => {app && app.off('smartSelectClosed')}

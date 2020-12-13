@@ -4,6 +4,7 @@ import OrderDetailsPage from '../pages/order-details.jsx';
 import AboutPage from '../pages/about.jsx';
 import FormPage from '../pages/form.jsx';
 import SettingsPage from '../pages/settings.jsx';
+import AccountPage from '../pages/account.jsx';
 
 import NotFoundPage from '../pages/404.jsx';
 
@@ -50,7 +51,7 @@ var routes = [
             }
           );
         })
-        .catch(e => console.log(e))
+        // .catch(e => console.log(e))
     },
   },
   {
@@ -89,7 +90,7 @@ var routes = [
             }
           );
         })
-        .catch(e => console.log(e))
+        // .catch(e => console.log(e))
     },
   },
   {
@@ -99,6 +100,10 @@ var routes = [
   {
     path: '/settings/',
     component: SettingsPage,
+  },
+  {
+    path: '/account/',
+    component: AccountPage,
   },
 
   // {

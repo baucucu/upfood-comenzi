@@ -1,7 +1,6 @@
 import React from 'react';
-
-import { createClient } from '@supabase/supabase-js'
-
+import { createClient } from '@supabase/supabase-js';
+import _ from 'lodash';
 
 import {
   App,
@@ -19,9 +18,18 @@ import {
 } from 'framework7-react';
 
 import routes from '../js/routes';
+
+const supabase = createClient("https://vqfzqdaycwbxpestlhyu.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYwNzA4MjE1OSwiZXhwIjoxOTIyNjU4MTU5fQ.nXZeUZu9aAOJJyQ6GDrBKsaL8ZtZHMCzctAsQZA8rZQ")        
+console.log("supabase: ", supabase)
+
 export default class extends React.Component {
   constructor() {
     super();
+    
+    
+    supabase.auth.onAuthStateChange((event, session) => {
+      console.log("auth state change: ",event, session)
+    });
 
     this.state = {
       // Framework7 Parameters
@@ -38,7 +46,7 @@ export default class extends React.Component {
             
             let formatedDate = new Date(date.substring(0,10).replace(/-/g,'/')).toDateString()
             let formatedTime = new Date(date.replace(/-/g,'/')).toTimeString().substr(0,5)
-            console.log()
+            // console.log()
             return {date: formatedDate, time: formatedTime}
           },
           groupOrders: (orders, app) => {
@@ -68,12 +76,12 @@ export default class extends React.Component {
               .then(response =>response.json())
               .then(data => {
               })
-              .catch(e => console.log(e))
+              // .catch(e => console.log(e))
           },
           searchbarSearch: (searchbar,query,prevQuery) => {
 
           },
-          getOrders : async () => {await fetch(`https://app.ecwid.com/api/v3/38960101/orders?token=secret_MWWdFUtVHMmkjtFWaaqerrPaCF2rthQT`,)
+          getOrders : () => {fetch(`https://app.ecwid.com/api/v3/38960101/orders?token=secret_MWWdFUtVHMmkjtFWaaqerrPaCF2rthQT`,)
             .then(response => response.json())
             .then(data => {
               this.setState({orders:data.items})
@@ -91,26 +99,25 @@ export default class extends React.Component {
       // Login screen demo data
       username: '',
       password: '',
-      orders:[],
+      // Orders
+      // orders:[],
+      user: {}
     }
 
-    // const supabase = createClient("https://vqfzqdaycwbxpestlhyu.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYwNzA4MjE1OSwiZXhwIjoxOTIyNjU4MTU5fQ.nXZeUZu9aAOJJyQ6GDrBKsaL8ZtZHMCzctAsQZA8rZQ")
-
   }
-  componentDidMount() {
-    getOrders()
-  }
-
+  
   render() {
     return (
       <App params={ this.state.f7params } >
 
+        
         {/* Views/Tabs container */}
         <Views tabs className="safe-areas">
           {/* Tabbar for switching views-tabs */}
           <Toolbar tabbar labels bottom>
             <Link tabLink="#view-orders"  tabLinkActive iconIos="f7:cart_fill" iconAurora="f7:cart_fill" iconMd="material:shopping_cart" text="Orders" />
             <Link tabLink="#view-settings"  iconIos="f7:gear" iconAurora="f7:gear" iconMd="material:settings" text="Settings" />
+            <Link tabLink="#view-account"  iconIos="f7:person" iconAurora="f7:person" iconMd="material:person" text="Account" />
           </Toolbar>
 
           {/* Orders View */}
@@ -119,30 +126,47 @@ export default class extends React.Component {
           {/* Settings View */}
           <View id="view-settings"  name="settings" tab url="/settings/" />
 
+          {/* Account View */}
+          <View id="view-account"  name="account" tab url="/account/" />
+
         </Views>
 
-        <LoginScreen id="my-login-screen">
+        <LoginScreen id="my-login-screen" opened={_.isEmpty(this.state.user)}>
           <View>
             <Page loginScreen>
               <LoginScreenTitle>Login</LoginScreenTitle>
               <List form>
                 <ListInput
-                  type="text"
-                  name="username"
-                  placeholder="Your username"
+                  type="email"
+                  name="email"
+                  placeholder="email address"
                   value={this.state.username}
                   onInput={(e) => this.setState({username: e.target.value})}
                 ></ListInput>
-                <ListInput
+                {/* <ListInput
                   type="password"
                   name="password"
                   placeholder="Your password"
                   value={this.state.password}
                   onInput={(e) => this.setState({password: e.target.value})}
-                ></ListInput>
+                ></ListInput> */}
               </List>
               <List>
-                <ListButton title="Sign In" onClick={() => this.alertLoginData()} />
+                <ListButton title="Sign In" onClick={async () => {
+                    // this.alertLoginData()
+                    const { user, error } = await supabase.auth.signIn({
+                      email: 'alexandru.raduca@gmail.com'
+                    })
+                  }} 
+                />
+                <ListButton title="Sign Out" onClick={async () => {
+                    const { error } = supabase.auth.signOut()
+                  }} 
+                />
+                <ListButton title="Session" onClick={ () => {
+                    this.getSession();
+                  }} 
+                />
                 <BlockFooter>
                   Some text about login information.<br />Click "Sign In" to close Login Screen
                 </BlockFooter>
@@ -153,15 +177,31 @@ export default class extends React.Component {
       </App>
     )
   }
+
+  getSession() {
+    const session = supabase.auth.session();
+    const user = supabase.auth.user();
+    console.log("session: ",session.user.email);
+    console.log("user: ", user);
+    session && this.setState({user: user})
+  }
+
   alertLoginData() {
     this.$f7.dialog.alert('Username: ' + this.state.username + '<br>Password: ' + this.state.password, () => {
       this.$f7.loginScreen.close();
     });
   }
+
+
   componentDidMount() {
+    // console.log("supabase: ", supabase);
+    
+
     this.$f7ready((f7) => {
 
       // Call F7 APIs here
+      // const session = supabase.auth.session();
+      // console.log("session: ",session)
     });
   }
 }

@@ -1,6 +1,6 @@
 import React from 'react';
-import {useState, useEffect} from 'react';
-import { Chip, BlockTitle, Card, Subnavbar, Searchbar, Page, Navbar, List, ListItem, ListGroup } from 'framework7-react';
+import {useState, useEffect, useContext} from 'react';
+import { Button, Block, Chip, BlockTitle, Card, Subnavbar, Searchbar, Page, Navbar, List, ListItem, ListGroup } from 'framework7-react';
 import _ from 'lodash';
 import { f7, f7ready } from 'framework7-react';
 
@@ -15,8 +15,8 @@ const colors = {
   RETURNED: 'red'
 }
 
-export default function(props) {
-  
+export default function OrdersList(props) {
+
   const [app, setApp] = useState()
   const [orders, setOrders] = useState(props.f7route.context.orders)
   const [filters, setFilters] = useState(['PAID','AWAITING_PAYMENT','CANCELLED','AWAITING_PROCESSING','PROCESSING','SHIPPED','RETURNED'])
@@ -28,8 +28,21 @@ export default function(props) {
   })
 
   useEffect(() => {
-    app && app.on('ptrRefresh',async (ptr) => {
-      await fetch(`https://app.ecwid.com/api/v3/38960101/orders?token=secret_MWWdFUtVHMmkjtFWaaqerrPaCF2rthQT`,)
+    app && app.on('pageBeforeIn', () => {
+      app.preloader.show();
+      fetch(`https://app.ecwid.com/api/v3/38960101/orders?token=secret_MWWdFUtVHMmkjtFWaaqerrPaCF2rthQT`,)
+        .then(response => response.json())
+        .then(data => {
+          setOrders(data.items)
+          app.preloader.hide()
+        })
+    })
+    return () => {app && app.off('pageBeforeIn')}
+  })
+
+  useEffect(() => {
+    app && app.on('ptrRefresh', (ptr) => {
+      fetch(`https://app.ecwid.com/api/v3/38960101/orders?token=secret_MWWdFUtVHMmkjtFWaaqerrPaCF2rthQT`,)
         .then(response => response.json())
         .then(data => {
           setOrders(data.items)
@@ -48,7 +61,6 @@ export default function(props) {
       })
     return () => {app && app.off('smartSelectClosed')}
   })
-
   return (
     <Page name='orders' ptr>
       <Navbar title='Orders'>
