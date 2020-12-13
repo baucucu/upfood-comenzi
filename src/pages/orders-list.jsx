@@ -3,17 +3,7 @@ import {useState, useEffect} from 'react';
 import { Chip, BlockTitle, Card, Subnavbar, Searchbar, Page, Navbar, List, ListItem, ListGroup } from 'framework7-react';
 import _ from 'lodash';
 import { f7, f7ready } from 'framework7-react';
-
-const colors = {
-  PAID: 'green',
-  AWAITING_PAYMENT: 'orange',
-  CANCELLED: 'red',
-  AWAITING_PROCESSING: 'orange',
-  PROCESSING: 'orange',
-  SHIPPED: 'orange',
-  DELIVERED: 'green',
-  RETURNED: 'red'
-}
+import {Colors} from '../css/colors';
 
 export default function OrdersList(props) {
 
@@ -28,7 +18,7 @@ export default function OrdersList(props) {
   })
 
   useEffect(() => {
-    app && app.on('pageBeforeIn', () => {
+    app && app.on('pageReinit', () => {
       app.preloader.show();
       fetch(`https://app.ecwid.com/api/v3/38960101/orders?token=secret_MWWdFUtVHMmkjtFWaaqerrPaCF2rthQT`,)
         .then(response => response.json())
@@ -37,7 +27,7 @@ export default function OrdersList(props) {
           app.preloader.hide()
         })
     })
-    return () => {app && app.off('pageBeforeIn')}
+    return () => {app && app.off('pageReinit')}
   })
 
   useEffect(() => {
@@ -121,8 +111,8 @@ export default function OrdersList(props) {
                       link={`/order/${order.id}/`}
                       noChevron={true}
                     >
-                      <Chip  slot="subtitle" color={colors[order.paymentStatus]}>{order.paymentStatus}</Chip>
-                      <Chip slot="subtitle" color={colors[order.fulfillmentStatus]}>{order.fulfillmentStatus}</Chip>
+                      <Chip  slot="subtitle" color={Colors[order.paymentStatus]}>{order.paymentStatus}</Chip>
+                      <Chip slot="subtitle" color={Colors[order.fulfillmentStatus]}>{order.fulfillmentStatus}</Chip>
                     </ListItem>)
                   })}
                 </ListGroup>

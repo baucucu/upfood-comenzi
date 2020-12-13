@@ -1,12 +1,13 @@
 import React, {useEffect, useState, useContext} from 'react';
-import { Icon, Link, List, Page, Card,CardContent, CardHeader, CardFooter, Navbar, BlockTitle, Block, ListItem, AccordionContent } from 'framework7-react';
+import { Chip, Icon, Link, List, Page, Card,CardContent, CardHeader, CardFooter, Navbar, BlockTitle, Block, ListItem, AccordionContent } from 'framework7-react';
 import { f7, f7ready } from 'framework7-react';
 import _ from 'lodash';
+import {Colors} from '../css/colors';
 
 
 export default function(props) {
 
-  console.log(props.f7route.context.order)
+  // console.log(props.f7route.context.order)
 
   const [app,setApp] = useState();
   const [order, setOrder] = useState(props.f7route.context.order);
@@ -103,15 +104,15 @@ export default function(props) {
                   <ListItem 
                     accordionItem = {_.has(item,'selectedOptions')}
                     key={index} 
-                    title={item.quantity + ' x ' + item.name + ' @ ' + item.price + ' lei'}
+                    title={item.name }
                   >
+                    <Chip  slot="after-title" color={Colors['MAIN']}>{item.quantity}</Chip>
                     <AccordionContent>
                       <Block>
-                      {_.has(item,'selectedOptions') ?
-                        <div>
+                      {_.has(item,'selectedOptions') && <div>
                           {item.selectedOptions.map((option, index) =>  <p key={index} >{option.name}: {option.value}</p>) }
                         </div> 
-                        : null}
+                      }
                       </Block>
                     </AccordionContent>
                   </ListItem>)}

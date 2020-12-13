@@ -41,6 +41,7 @@ export default function(props) {
     app && app.on('pageBeforeIn', () => {
       getSession();
     })
+    return () => {app && app.off('pageBeforeIn')}
   });
 
   useEffect(() => {
@@ -53,8 +54,8 @@ export default function(props) {
 
   const getSession = () => {
     const session = supabase.auth.session();
-    console.log("session: ",session);
-    session && console.log("user: ", session.user);
+    // console.log("session: ",session);
+    // session && console.log("user: ", session.user);
     session && setUser(session.user)
   }
 
@@ -100,8 +101,9 @@ export default function(props) {
         await fetch(url,options)
           .then(response =>response.json())
           .then(data => {
+            console.log("order was updated");
           })
-          // .catch(e => console.log(e))
+          .catch(e => console.log(e))
       },
       searchbarSearch: (searchbar,query,prevQuery) => {
 
@@ -110,7 +112,6 @@ export default function(props) {
         .then(response => response.json())
         .then(data => {
           console.log('getOrders was called');
-          // this.setState({orders:data.items})
         })
       },
     },
@@ -157,8 +158,7 @@ export default function(props) {
                 name="email"
                 placeholder="email address"
                 value={username}
-                onChange={console.log(username)}
-                onInput={(e) => {setUsername(e.target.value); }}
+                onInput={(e) => {setUsername(e.target.value) }}
               ></ListInput>
               {/* <ListInput
                 type="password"
@@ -174,6 +174,7 @@ export default function(props) {
                   const { user, error } = await supabase.auth.signIn({
                     email: username
                   })
+
                 }} 
               />
               <ListButton title="Sign Out" onClick={async () => {
