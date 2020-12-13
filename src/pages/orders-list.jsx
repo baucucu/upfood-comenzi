@@ -1,6 +1,6 @@
 import React from 'react';
-import {useState, useEffect, useContext} from 'react';
-import { Button, Block, Chip, BlockTitle, Card, Subnavbar, Searchbar, Page, Navbar, List, ListItem, ListGroup } from 'framework7-react';
+import {useState, useEffect} from 'react';
+import { Chip, BlockTitle, Card, Subnavbar, Searchbar, Page, Navbar, List, ListItem, ListGroup } from 'framework7-react';
 import _ from 'lodash';
 import { f7, f7ready } from 'framework7-react';
 

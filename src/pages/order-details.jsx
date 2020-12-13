@@ -17,6 +17,7 @@ export default function(props) {
     })
   })
 
+
   useEffect(() => {
     app && app.on('smartSelectClosed',async function(ss) {
       if(ss.selectName == 'paymentStatus' || ss.selectName == 'fulfillmentStatus') {
