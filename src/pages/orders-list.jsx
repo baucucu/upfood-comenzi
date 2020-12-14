@@ -1,9 +1,10 @@
 import React from 'react';
 import {useState, useEffect} from 'react';
-import { Chip, BlockTitle, Card, Subnavbar, Searchbar, Page, Navbar, List, ListItem, ListGroup } from 'framework7-react';
+import { Chip, BlockTitle, Card, Icon, Subnavbar, Searchbar, Page, Navbar, List, ListItem, ListGroup } from 'framework7-react';
 import _ from 'lodash';
 import { f7, f7ready } from 'framework7-react';
-import {Colors} from '../css/colors';
+import {Colors} from '../helpers/colors';
+import {Labels} from '../helpers/labels';
 
 export default function OrdersList(props) {
 
@@ -75,16 +76,16 @@ export default function OrdersList(props) {
         >
           <select name='filters' multiple defaultValue={filters}>
             <optgroup label='PAYMENT STATUS'>
-              <option value='PAID'>PAID</option>
-              <option value='AWAITING_PAYMENT'>AWAITING_PAYMENT</option>
-              <option value='CANCELLED'>CANCELLED</option>
+              <option value='PAID'>{Labels['PAID']}</option>
+              <option value='AWAITING_PAYMENT'>{Labels['AWAITING_PAYMENT']}</option>
+              <option value='CANCELLED'>{Labels['CANCELLED']}</option>
             </optgroup>
             <optgroup label='FULFILLMENT STATUS'>
-              <option value='AWAITING_PROCESSING'>AWAITING_PROCESSING</option>
-              <option value='PROCESSING'>PROCESSING</option>
-              <option value='SHIPPED'>SHIPPED</option>
-              <option value='DELIVERED'>DELIVERED</option>
-              <option value='RETURNED'>RETURNED</option>
+              <option value='AWAITING_PROCESSING'>{Labels['AWAITING_PROCESSING']}</option>
+              <option value='PROCESSING'>{Labels['PROCESSING']}</option>
+              <option value='SHIPPED'>{Labels['SHIPPED']}</option>
+              <option value='DELIVERED'>{Labels['DELIVERED']}</option>
+              <option value='RETURNED'>{Labels['RETURNED']}</option>
             </optgroup>
           </select>
         </ListItem>  
@@ -111,8 +112,12 @@ export default function OrdersList(props) {
                       link={`/order/${order.id}/`}
                       noChevron={true}
                     >
-                      <Chip  slot="subtitle" color={Colors[order.paymentStatus]}>{order.paymentStatus}</Chip>
-                      <Chip slot="subtitle" color={Colors[order.fulfillmentStatus]}>{order.fulfillmentStatus}</Chip>
+                      <Chip slot="subtitle"  color={Colors[order.fulfillmentStatus]} text={Labels[order.fulfillmentStatus]}>
+                        <Icon slot="media" ios="f7:clock" aurora="f7:clock" md="material:update"></Icon>
+                      </Chip>
+                      <Chip  slot="subtitle"  color={Colors[order.paymentStatus]} text={Labels[order.paymentStatus]}>
+                        <Icon slot="media" ios="f7:money_dollar_circle" aurora="f7:money_dollar_circle" md="material:attach_money"></Icon>
+                      </Chip>
                     </ListItem>)
                   })}
                 </ListGroup>

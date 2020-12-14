@@ -2,12 +2,13 @@ import React, {useEffect, useState, useContext} from 'react';
 import { Chip, Icon, Link, List, Page, Card,CardContent, CardHeader, CardFooter, Navbar, BlockTitle, Block, ListItem, AccordionContent } from 'framework7-react';
 import { f7, f7ready } from 'framework7-react';
 import _ from 'lodash';
-import {Colors} from '../css/colors';
+import {Colors} from '../helpers/colors';
+import {Labels} from '../helpers/labels';
 
 
 export default function(props) {
 
-  // console.log(props.f7route.context.order)
+  console.log(props.f7route.context.order)
 
   const [app,setApp] = useState();
   const [order, setOrder] = useState(props.f7route.context.order);
@@ -69,9 +70,9 @@ export default function(props) {
             >
               <select name='paymentStatus' defaultValue={order.paymentStatus}>
                 <optgroup label='PAYMENT STATUS'>
-                  <option value='CANCELLED'>CANCELLED</option>
-                  <option value='AWAITING_PAYMENT'>AWAITING_PAYMENT</option>
-                  <option value='PAID'>PAID</option>
+                  <option value='PAID'>{Labels['PAID']}</option>
+                  <option value='AWAITING_PAYMENT'>{Labels['AWAITING_PAYMENT']}</option>
+                  <option value='CANCELLED'>{Labels['CANCELLED']}</option>
                 </optgroup>
               </select>
             </ListItem>
@@ -84,17 +85,24 @@ export default function(props) {
             >
               <select name='fulfillmentStatus' defaultValue={order.fulfillmentStatus}>
                 <optgroup label='FULFILLMENT STATUS'>
-                  <option value='AWAITING_PROCESSING'>AWAITING_PROCESSING</option>
-                  <option value='PROCESSING'>PROCESSING</option>
-                  <option value='SHIPPED'>SHIPPED</option>
-                  <option value='DELIVERED'>DELIVERED</option>
-                  <option value='RETURNED'>RETURNED</option>
+                  <option value='AWAITING_PROCESSING'>{Labels['AWAITING_PROCESSING']}</option>
+                  <option value='PROCESSING'>{Labels['PROCESSING']}</option>
+                  <option value='READY_FOR_PICKUP'>{Labels['READY_FOR_PICKUP']}</option>
+                  <option value='SHIPPED'>{Labels['SHIPPED']}</option>
+                  <option value='DELIVERED'>{Labels['DELIVERED']}</option>
+                  <option value='RETURNED'>{Labels['RETURNED']}</option>
                 </optgroup>
               </select>
             </ListItem>
               
             </List>
           </CardContent>
+        </Card>
+        <BlockTitle strong>Driver</BlockTitle>
+        <Card>
+          <List>
+            <ListItem>Driver</ListItem>
+          </List>
         </Card>
         <BlockTitle strong>Items</BlockTitle>
         <Card>
@@ -105,6 +113,7 @@ export default function(props) {
                     accordionItem = {_.has(item,'selectedOptions')}
                     key={index} 
                     title={item.name }
+                    // media={item.smallThumbnailUrl}
                   >
                     <Chip  slot="after-title" color={Colors['MAIN']}>{item.quantity}</Chip>
                     <AccordionContent>
