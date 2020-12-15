@@ -31,10 +31,23 @@ export default function(props) {
   const [username, setUsername] = useState("");
   const [password, setPasssword] = useState("");
   
+
   useEffect(() => {
     f7ready(() => {      
       setApp(f7.loginScreen.get('#my-login-screen').app)
     })
+  });
+
+  useEffect(() => {
+    const eventSource = new EventSource(
+      "http://sdk.m.pipedream.net/pipelines/p_rvCqMgB/sse"
+    );
+    
+    eventSource.addEventListener("orders", function(e) {
+      console.log("App: New event from orders stream: ", e);
+    }, false)
+    
+    return eventSource.removeEventListener('orders',() => {});
   });
 
   useEffect(() => {

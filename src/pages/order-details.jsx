@@ -8,7 +8,7 @@ import {Labels} from '../helpers/labels';
 
 export default function(props) {
 
-  console.log(props.f7route.context.order)
+  // console.log(props.f7route.context.order)
 
   const [app,setApp] = useState();
   const [order, setOrder] = useState(props.f7route.context.order);

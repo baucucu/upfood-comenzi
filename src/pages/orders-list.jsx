@@ -19,6 +19,25 @@ export default function OrdersList(props) {
   })
 
   useEffect(() => {
+    const eventSource = new EventSource(
+      "http://sdk.m.pipedream.net/pipelines/p_rvCqMgB/sse"
+    );
+    eventSource.addEventListener("orders", function(e) {
+      console.log("OrdersList: New event from orders stream: ", e);
+      // app && app.preloader.show();
+      fetch(`https://app.ecwid.com/api/v3/38960101/orders?token=secret_MWWdFUtVHMmkjtFWaaqerrPaCF2rthQT`,)
+        .then(response => response.json())
+        .then(data => {
+          setOrders(data.items)
+          // app && app.preloader.hide();
+        })
+    },false);
+    return eventSource.removeEventListener('orders',() => {});
+  });
+
+  
+
+  useEffect(() => {
     app && app.on('pageReinit', () => {
       app.preloader.show();
       fetch(`https://app.ecwid.com/api/v3/38960101/orders?token=secret_MWWdFUtVHMmkjtFWaaqerrPaCF2rthQT`,)
