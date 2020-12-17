@@ -5,71 +5,39 @@ import _ from 'lodash';
 import {Colors} from '../helpers/colors';
 import {Labels} from '../helpers/labels';
 
+import {OrdersContext} from '../contexts/orders-context'
 
 export default function(props) {
-
-  // console.log(props.f7route.context.order)
-
-  const [app,setApp] = useState();
-  const [order, setOrder] = useState(props.f7route.context.order);
+  const orders = React.useContext(OrdersContext);
+  const [order, setOrder] = useState(orders.getOrderById(props.f7route.context.orderId))
 
   useEffect(() => {
-    f7ready(() => {      
-      setApp(f7.smartSelect.get('#payment-select').app)
-    })
-  })
-
-  useEffect(() => {
-    const eventSource = new EventSource(
-      "http://sdk.m.pipedream.net/pipelines/p_rvCqMgB/sse"
-    );
-    eventSource.addEventListener("orders", function(e) {
-      console.log("OrderDetails: New event from orders stream: ", e);
-      // app && app.preloader.show();
-      fetch(`https://app.ecwid.com/api/v3/38960101/orders/${order.id}?token=secret_MWWdFUtVHMmkjtFWaaqerrPaCF2rthQT`,)
-        .then(response => response.json())
-        .then(data => {
-          console.log(data)
-          setOrder(data)
-          console.log('Orders refreshed by server ')
-          // app && app.preloader.hide();
-
-        })
-    },false);
-    return () => {eventSource.removeEventListener('orders',() => {});}
-  },[]);
-
-  useEffect(() => {
-    app && app.on('smartSelectClosed',async function(ss) {
+    f7.on('smartSelectClosed',async function(ss) {
       if(ss.selectName == 'paymentStatus' || ss.selectName == 'fulfillmentStatus') {
         let value = ss.getValue()
         let id = ss.selectName
         let newPaymentStatus = id == "paymentStatus" ? value : order.paymentStatus
         let newFulfillmentStatus = id == "fulfillmentStatus" ? value : order.fulfillmentStatus
         let dif = order[id] !== value
-        dif && app && app.methods.updateOrderStatus(order.id, newFulfillmentStatus, newPaymentStatus )
-        .then(function() {
-          fetch(`https://app.ecwid.com/api/v3/38960101/orders/${order.id}?token=secret_MWWdFUtVHMmkjtFWaaqerrPaCF2rthQT`,)
-            .then(response => response.json())
-            .then(data => {
-              setOrder(data)
-            })
-            // .then(()=>{
-            //   console.log('paymentStatus: ', app.smartSelect.get('#payment-select').setValue(order.paymentStatus));
-            //   console.log('paymentStatus: ', app.smartSelect.get('#fulfillment-select').setValue(order.fulfillmentStatus));
-            // })
-            // .then(() => {app.dialog.alert("Order status was updated")})  
-
-        })
+        dif && f7.methods.updateOrderStatus(order.id, newFulfillmentStatus, newPaymentStatus )
       }
-        return () => {app && app.off('smartSelectClosed')}
+        return () => {f7.off('smartSelectClosed')}
     })
   })
 
+  useEffect(() => {
+    f7.on('ptrRefresh', (ptr) => {
+      console.log('pulled to refresh', f7)
+      setOrder(orders.getOrderById(props.f7route.context.orderId))
+      f7.ptr.done(ptr)
+    })
+    return () => {f7.off('ptrRefresh')}
+  })
+
     return (
-      <Page name="order" >
+      <Page name="order" ptr >
         <Navbar title={'Comanda #' + order.id} backLink="Back" />
-        <BlockTitle strong>{app && app.methods.convertDateToString(order.createDate).date}, {app && app.methods.convertDateToString(order.createDate).time}</BlockTitle>
+        <BlockTitle strong>{f7.methods.convertDateToString(order.createDate).date}, {f7.methods.convertDateToString(order.createDate).time}</BlockTitle>
         {!_.has(order, 'shippingPerson') ? null : 
         <Card> 
           <CardHeader>{order.shippingPerson.name}</CardHeader>

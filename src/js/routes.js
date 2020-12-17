@@ -15,45 +15,14 @@ var routes = [
     component: AboutPage,
   },
   {
-    path: '/orders/',
-    ptr: true,
+    path: '/orders',
+    component: OrdersPage,
     ignoreCache:true,
-    // component: OrdersPage,
-    async: async function (routeTo, routeFrom, resolve, reject) {
-      // Router instance
-      var router = this;
-
-      // App instance
-      var app = router.app;
-
-      // Show Preloader
-      app.preloader.show();
-
-      // User ID from request
-      var id = routeTo.params.id;
-
-      fetch(`https://app.ecwid.com/api/v3/38960101/orders?token=secret_MWWdFUtVHMmkjtFWaaqerrPaCF2rthQT`,)
-        .then(response => response.json())
-        .then(data => {
-          
-          // Hide Preloader
-          app.preloader.hide();
-          
-          // Resolve route to load page
-          resolve(
-            {
-              component: OrdersPage,
-            },
-            {
-              context: {
-                orders: data.items,
-              }
-            }
-          );
-        })
-        // .catch(e => console.log(e))
-    },
   },
+  // {
+  //   path: 'order/:id/',
+  //   component: OrderDetailsPage,
+  // },
   {
     path: '/order/:id/',
     // component: OrderDetailsPage,
@@ -70,27 +39,17 @@ var routes = [
 
       // User ID from request
       var id = routeTo.params.id;
-
-       fetch(`https://app.ecwid.com/api/v3/38960101/orders/${id}?token=secret_MWWdFUtVHMmkjtFWaaqerrPaCF2rthQT`,)
-        .then(response => response.json())
-        .then(data => {
-        
-          // Hide Preloader
-          app.preloader.hide();
-          
-          // Resolve route to load page
-          resolve(
-            {
-              component: OrderDetailsPage,
-            },
-            {
-              context: {
-                order: data,
-              }
-            }
-          );
-        })
-        // .catch(e => console.log(e))
+      resolve(
+        {
+          component: OrderDetailsPage,
+        },
+        {
+          context: {
+            orderId: id,
+          }
+        }
+      );
+      app.preloader.hide();
     },
   },
   {
