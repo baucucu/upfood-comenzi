@@ -49,7 +49,6 @@ export default class extends React.Component {
         .then(data => {
           this.setState({orders: data.items})
           console.log('Comenzi downloaded')
-          // app && app.preloader.hide();
         })
     }
 
@@ -120,7 +119,7 @@ export default class extends React.Component {
         filterOrders: (orders, filters) => {
           return orders.filter(order =>  _.includes(filters, order.paymentStatus) || _.includes(filters,order.fulfillmentStatus) )
         },
-        updateOrderStatus: async(id, key, value) => {
+        updateOrderStatus: (id, key, value) => {
           const data = new Object();
           data[key] = value;
 
@@ -135,7 +134,7 @@ export default class extends React.Component {
           };
           const url = `https://app.ecwid.com/api/v3/38960101/orders/${id}?token=secret_MWWdFUtVHMmkjtFWaaqerrPaCF2rthQT`;
           
-          await fetch(url,options)
+          fetch(url,options)
             .then(response =>response.json())
             .then(data => {
               console.log("order was updated: ",id, key, value);
