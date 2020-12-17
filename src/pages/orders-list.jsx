@@ -29,26 +29,27 @@ export default function OrdersList(props) {
         .then(response => response.json())
         .then(data => {
           setOrders(data.items)
+          console.log('Orders refreshed by server ')
           // app && app.preloader.hide();
         })
     },false);
-    return eventSource.removeEventListener('orders',() => {});
-  });
+    return () => {eventSource.removeEventListener('orders',() => {});}
+  },[]);
 
   
 
-  useEffect(() => {
-    app && app.on('pageReinit', () => {
-      app.preloader.show();
-      fetch(`https://app.ecwid.com/api/v3/38960101/orders?token=secret_MWWdFUtVHMmkjtFWaaqerrPaCF2rthQT`,)
-        .then(response => response.json())
-        .then(data => {
-          setOrders(data.items)
-          app.preloader.hide()
-        })
-    })
-    return () => {app && app.off('pageReinit')}
-  })
+  // useEffect(() => {
+  //   app && app.on('pageReinit', () => {
+  //     app.preloader.show();
+  //     fetch(`https://app.ecwid.com/api/v3/38960101/orders?token=secret_MWWdFUtVHMmkjtFWaaqerrPaCF2rthQT`,)
+  //       .then(response => response.json())
+  //       .then(data => {
+  //         setOrders(data.items)
+  //         app.preloader.hide()
+  //       })
+  //   })
+  //   return () => {app && app.off('pageReinit')}
+  // })
 
   useEffect(() => {
     app && app.on('ptrRefresh', (ptr) => {
@@ -123,19 +124,34 @@ export default function OrdersList(props) {
                   {app && app.methods.filterOrders(orders, filters).map(order => { if(app && app.methods.convertDateToString(order.createDate).date === group) return(
                     <ListItem
                       key={order.id}                      
-                      title={'Comanda #' + order.id}
+                      // title={'Comanda #' + order.id}
                       // subtitle={order.paymentStatus+'  '+order.fulfillmentStatus}
-                      after={order.total+' lei'}
-                      header={app && app.methods.convertDateToString(order.createDate).time}
-                      footer={_.has(order,'shippingPerson') ? order.shippingPerson.street : 'no delivery'}
+                      // after={order.total+' lei'}
+                      // header={app && app.methods.convertDateToString(order.createDate).time}
+                      // footer={_.has(order,'shippingPerson') ? order.shippingPerson.street : 'no delivery'}
                       link={`/order/${order.id}/`}
                       noChevron={true}
                     >
-                      <Chip slot="subtitle"  color={Colors[order.fulfillmentStatus]} text={Labels[order.fulfillmentStatus]}>
-                        <Icon slot="media" ios="f7:clock" aurora="f7:clock" md="material:update"></Icon>
+                      <Chip slot="header"  outline  text={app && app.methods.convertDateToString(order.createDate).time}>
+                        <Icon slot="media" color='black' ios="f7:clock" aurora="f7:clock" md="material:slow_motion_video"></Icon>
                       </Chip>
-                      <Chip  slot="subtitle"  color={Colors[order.paymentStatus]} text={Labels[order.paymentStatus]}>
+                      <Chip slot="header"  outline  text={'Comanda #' + order.id}>
+                        {/* <Icon slot="media" color='black' ios="f7:number" aurora="f7:number" md="material:number"></Icon> */}
+                      </Chip>
+                      <Chip slot="title"  color={Colors[order.fulfillmentStatus]} text={Labels[order.fulfillmentStatus]}>
+                        <Icon slot="media" ios="f7:timer" aurora="f7:timer" md="material:timer"></Icon>
+                      </Chip>
+                      <Chip  slot="after"  color={Colors[order.paymentStatus]} text={Labels[order.paymentStatus]+': '+ order.total+' lei'}>
                         <Icon slot="media" ios="f7:money_dollar_circle" aurora="f7:money_dollar_circle" md="material:attach_money"></Icon>
+                      </Chip>
+                      {_.has(order,'shippingPerson') && <Chip  slot="footer" outline  text={order.shippingPerson.name}>
+                        <Icon slot="media" color='black' ios="f7:person" aurora="f7:person" md="material:person"></Icon>
+                      </Chip>}
+                      {_.has(order,'shippingPerson') && <Chip  slot="footer" outline  text={order.shippingPerson.phone}>
+                        <Icon slot="media" color='black' ios="f7:phone" aurora="f7:phone" md="material:phone"></Icon>
+                      </Chip>}
+                      <Chip  slot="footer" outline  text={_.has(order,'shippingPerson') ? order.shippingPerson.street : 'no delivery'}>
+                        <Icon slot="media" color='black' ios="f7:placemark" aurora="f7:placemark" md="material:placemark"></Icon>
                       </Chip>
                     </ListItem>)
                   })}

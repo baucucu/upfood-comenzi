@@ -38,17 +38,17 @@ export default function(props) {
     })
   });
 
-  useEffect(() => {
-    const eventSource = new EventSource(
-      "http://sdk.m.pipedream.net/pipelines/p_rvCqMgB/sse"
-    );
+  // useEffect(() => {
+  //   const eventSource = new EventSource(
+  //     "http://sdk.m.pipedream.net/pipelines/p_rvCqMgB/sse"
+  //   );
     
-    eventSource.addEventListener("orders", function(e) {
-      console.log("App: New event from orders stream: ", e);
-    }, false)
+  //   eventSource.addEventListener("orders", function(e) {
+  //     console.log("App: New event from orders stream: ", e.data);
+  //   }, false)
     
-    return eventSource.removeEventListener('orders',() => {});
-  });
+  //   return () => {eventSource.removeEventListener('orders',() => {});}
+  // },[]);
 
   useEffect(() => {
     app && app.on('pageBeforeIn', () => {
@@ -78,6 +78,7 @@ export default function(props) {
     // App root data
     data: function () {
       return {
+        orders: [],
       };
     },
     methods: {

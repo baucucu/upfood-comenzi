@@ -19,6 +19,25 @@ export default function(props) {
     })
   })
 
+  useEffect(() => {
+    const eventSource = new EventSource(
+      "http://sdk.m.pipedream.net/pipelines/p_rvCqMgB/sse"
+    );
+    eventSource.addEventListener("orders", function(e) {
+      console.log("OrderDetails: New event from orders stream: ", e);
+      // app && app.preloader.show();
+      fetch(`https://app.ecwid.com/api/v3/38960101/orders/${order.id}?token=secret_MWWdFUtVHMmkjtFWaaqerrPaCF2rthQT`,)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data)
+          setOrder(data)
+          console.log('Orders refreshed by server ')
+          // app && app.preloader.hide();
+
+        })
+    },false);
+    return () => {eventSource.removeEventListener('orders',() => {});}
+  },[]);
 
   useEffect(() => {
     app && app.on('smartSelectClosed',async function(ss) {
@@ -35,7 +54,12 @@ export default function(props) {
             .then(data => {
               setOrder(data)
             })
+            // .then(()=>{
+            //   console.log('paymentStatus: ', app.smartSelect.get('#payment-select').setValue(order.paymentStatus));
+            //   console.log('paymentStatus: ', app.smartSelect.get('#fulfillment-select').setValue(order.fulfillmentStatus));
+            // })
             // .then(() => {app.dialog.alert("Order status was updated")})  
+
         })
       }
         return () => {app && app.off('smartSelectClosed')}
@@ -68,11 +92,11 @@ export default function(props) {
               className='smart-select smart-select-init'
               id='payment-select'
             >
-              <select name='paymentStatus' defaultValue={order.paymentStatus}>
+              <select name='paymentStatus' id='paymentStatus' defaultValue={order.paymentStatus}>
                 <optgroup label='PAYMENT STATUS'>
-                  <option value='PAID'>{Labels['PAID']}</option>
-                  <option value='AWAITING_PAYMENT'>{Labels['AWAITING_PAYMENT']}</option>
-                  <option value='CANCELLED'>{Labels['CANCELLED']}</option>
+                  <option data-option-color={Colors['PAID']} value='PAID'>{Labels['PAID']}</option>
+                  <option data-option-color={Colors['AWAITING_PAYMENT']} value='AWAITING_PAYMENT'>{Labels['AWAITING_PAYMENT']}</option>
+                  <option data-option-color={Colors['CANCELLED']} value='CANCELLED'>{Labels['CANCELLED']}</option>
                 </optgroup>
               </select>
             </ListItem>
@@ -83,14 +107,14 @@ export default function(props) {
               className='smart-select smart-select-init'
               id='fulfillment-select'
             >
-              <select name='fulfillmentStatus' defaultValue={order.fulfillmentStatus}>
+              <select name='fulfillmentStatus' id='fulfillmentStatus' defaultValue={order.fulfillmentStatus}>
                 <optgroup label='FULFILLMENT STATUS'>
-                  <option value='AWAITING_PROCESSING'>{Labels['AWAITING_PROCESSING']}</option>
-                  <option value='PROCESSING'>{Labels['PROCESSING']}</option>
-                  <option value='READY_FOR_PICKUP'>{Labels['READY_FOR_PICKUP']}</option>
-                  <option value='SHIPPED'>{Labels['SHIPPED']}</option>
-                  <option value='DELIVERED'>{Labels['DELIVERED']}</option>
-                  <option value='RETURNED'>{Labels['RETURNED']}</option>
+                  <option data-option-color={Colors['AWAITING_PROCESSING']} value='AWAITING_PROCESSING'>{Labels['AWAITING_PROCESSING']}</option>
+                  <option data-option-color={Colors['PROCESSING']} value='PROCESSING'>{Labels['PROCESSING']}</option>
+                  <option data-option-color={Colors['READY_FOR_PICKUP']} value='READY_FOR_PICKUP'>{Labels['READY_FOR_PICKUP']}</option>
+                  <option data-option-color={Colors['SHIPPED']} value='SHIPPED'>{Labels['SHIPPED']}</option>
+                  <option data-option-color={Colors['DELIVERED']} value='DELIVERED'>{Labels['DELIVERED']}</option>
+                  <option data-option-color={Colors['RETURNED ']} value='RETURNED'>{Labels['RETURNED']}</option>
                 </optgroup>
               </select>
             </ListItem>
