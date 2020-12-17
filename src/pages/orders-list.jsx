@@ -5,79 +5,37 @@ import _ from 'lodash';
 import { f7, f7ready } from 'framework7-react';
 import {Colors} from '../helpers/colors';
 import {Labels} from '../helpers/labels';
+import {OrdersContext} from '../contexts/orders-context'
 
 export default function OrdersList(props) {
 
-  const [app, setApp] = useState()
-  const [orders, setOrders] = useState(props.f7route.context.orders)
+  const orders = React.useContext(OrdersContext);
   const [filters, setFilters] = useState(['PAID','AWAITING_PAYMENT','CANCELLED','AWAITING_PROCESSING','PROCESSING','SHIPPED','RETURNED'])
 
   useEffect(() => {
-    f7ready(() => {      
-      setApp(f7.smartSelect.get('#filters-select').app)
+    f7.on('ptrRefresh', (ptr) => {
+      console.log('pulled to refresh', f7)
+      orders.getOrders()
+      f7.ptr.done(ptr)
     })
-  })
-
-  useEffect(() => {
-    const eventSource = new EventSource(
-      "http://sdk.m.pipedream.net/pipelines/p_rvCqMgB/sse"
-    );
-    eventSource.addEventListener("orders", function(e) {
-      console.log("OrdersList: New event from orders stream: ", e);
-      // app && app.preloader.show();
-      fetch(`https://app.ecwid.com/api/v3/38960101/orders?token=secret_MWWdFUtVHMmkjtFWaaqerrPaCF2rthQT`,)
-        .then(response => response.json())
-        .then(data => {
-          setOrders(data.items)
-          console.log('Orders refreshed by server ')
-          // app && app.preloader.hide();
-        })
-    },false);
-    return () => {eventSource.removeEventListener('orders',() => {});}
-  },[]);
-
-  
-
-  // useEffect(() => {
-  //   app && app.on('pageReinit', () => {
-  //     app.preloader.show();
-  //     fetch(`https://app.ecwid.com/api/v3/38960101/orders?token=secret_MWWdFUtVHMmkjtFWaaqerrPaCF2rthQT`,)
-  //       .then(response => response.json())
-  //       .then(data => {
-  //         setOrders(data.items)
-  //         app.preloader.hide()
-  //       })
-  //   })
-  //   return () => {app && app.off('pageReinit')}
-  // })
-
-  useEffect(() => {
-    app && app.on('ptrRefresh', (ptr) => {
-      fetch(`https://app.ecwid.com/api/v3/38960101/orders?token=secret_MWWdFUtVHMmkjtFWaaqerrPaCF2rthQT`,)
-        .then(response => response.json())
-        .then(data => {
-          setOrders(data.items)
-          app.ptr.done(ptr)
-        })
-    })
-    return () => {app && app.off('ptrRefresh')}
+    return () => {f7.off('ptrRefresh')}
   })
   
   useEffect(() => {
-    app && app.on('smartSelectClosed',(ss) => {
+    f7.on('smartSelectClosed',(ss) => {
         if(ss.selectName === 'filters') {
           let newFilters = ss.getValue()
           setFilters([...newFilters])
         }
       })
-    return () => {app && app.off('smartSelectClosed')}
+    return () => {f7.off('smartSelectClosed')}
   })
   return (
     <Page name='orders' ptr>
       <Navbar title='Orders'>
         <Subnavbar inner={false}>
           <Searchbar
-            onSearchbarSearch ={app && app.methods.searchbarSearch}
+            onSearchbarSearch ={f7.methods.searchbarSearch}
             searchContainer='.search-list'
             searchItem='li'
             searchIn='.item-title , .item-subtitle, .item-footer, .item-header'
@@ -110,18 +68,18 @@ export default function OrdersList(props) {
           </select>
         </ListItem>  
       </List>
-      <BlockTitle>Orders: {app && app.methods.filterOrders(orders, filters).length}</BlockTitle>
+      <BlockTitle>Orders: {f7.methods.filterOrders(orders.orders, filters).length}</BlockTitle>
       <Card >
         <List className='searchbar-not-found'>
           <ListItem title='Nothing found' />
         </List>
         <List mediaList className='search-list searchbar-found'>
-            {app && app.methods.groupOrders(app.methods.filterOrders(orders, filters),app).map((group, index) => {
+            {f7.methods.groupOrders(f7.methods.filterOrders(orders.orders, filters),f7).map((group, index) => {
               return(
                 <ListGroup mediaList key={index}>
                   <ListItem title={group} groupTitle></ListItem>
 
-                  {app && app.methods.filterOrders(orders, filters).map(order => { if(app && app.methods.convertDateToString(order.createDate).date === group) return(
+                  {f7.methods.filterOrders(orders.orders, filters).map(order => { if(f7.methods.convertDateToString(order.createDate).date === group) return(
                     <ListItem
                       key={order.id}                      
                       // title={'Comanda #' + order.id}
@@ -132,7 +90,7 @@ export default function OrdersList(props) {
                       link={`/order/${order.id}/`}
                       noChevron={true}
                     >
-                      <Chip slot="header"  outline  text={app && app.methods.convertDateToString(order.createDate).time}>
+                      <Chip slot="header"  outline  text={f7.methods.convertDateToString(order.createDate).time}>
                         <Icon slot="media" color='black' ios="f7:clock" aurora="f7:clock" md="material:slow_motion_video"></Icon>
                       </Chip>
                       <Chip slot="header"  outline  text={'Comanda #' + order.id}>
