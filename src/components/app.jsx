@@ -90,6 +90,7 @@ export default class extends React.Component {
           );
           eventSource.addEventListener("orders", function(e) {
             console.log("OrdersList: New event from orders stream: ",e);
+            // app && app.preloader.show();
             that.getOrders();
           });
         }
@@ -110,7 +111,10 @@ export default class extends React.Component {
         filterOrders: (orders, filters) => {
           return orders.filter(order =>  _.includes(filters, order.paymentStatus) || _.includes(filters,order.fulfillmentStatus) )
         },
-        updateOrderStatus: async(id, fulfillmentStatus, paymentStatus) => {
+        updateOrderStatus: async(id, key, value) => {
+          const data = new Object();
+          data[key] = value;
+
           const options = {
             method: 'PUT', 
             headers: {
@@ -118,17 +122,14 @@ export default class extends React.Component {
               'Content-Type': 'application/json',
               'Cache-Control': 'no-cache'
             },
-            body: JSON.stringify({
-              "fulfillmentStatus" : fulfillmentStatus,
-              "paymentStatus" : paymentStatus,
-            })
+            body: JSON.stringify(data)
           };
           const url = `https://app.ecwid.com/api/v3/38960101/orders/${id}?token=secret_MWWdFUtVHMmkjtFWaaqerrPaCF2rthQT`;
           
           await fetch(url,options)
             .then(response =>response.json())
             .then(data => {
-              console.log("order was updated");
+              console.log("order was updated: ",id, key, value);
             })
             .catch(e => console.log(e))
         },
@@ -137,8 +138,14 @@ export default class extends React.Component {
         },
         logOut: function() {
           this.data.isLoggedIn = false;
-          console.log(this.data.isLoggedIn)
         },
+        updateOrders : function(app) {
+          app.request.json(
+            `https://app.ecwid.com/api/v3/38960101/orders?token=secret_MWWdFUtVHMmkjtFWaaqerrPaCF2rthQT`, 
+            function(data, status, xhr){app.data.orders = data.items}, 
+            function (xhr, status, message){console.log(message)}
+            )
+        }
       },
       
       // App routes

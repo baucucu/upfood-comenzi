@@ -15,11 +15,11 @@ export default function(props) {
     f7.on('smartSelectClosed',async function(ss) {
       if(ss.selectName == 'paymentStatus' || ss.selectName == 'fulfillmentStatus') {
         let value = ss.getValue()
-        let id = ss.selectName
-        let newPaymentStatus = id == "paymentStatus" ? value : order.paymentStatus
-        let newFulfillmentStatus = id == "fulfillmentStatus" ? value : order.fulfillmentStatus
-        let dif = order[id] !== value
-        dif && f7.methods.updateOrderStatus(order.id, newFulfillmentStatus, newPaymentStatus )
+        let key = ss.selectName
+        let newPaymentStatus = key == "paymentStatus" ? value : order.paymentStatus
+        let newFulfillmentStatus = key == "fulfillmentStatus" ? value : order.fulfillmentStatus
+        let dif = order[key] !== value
+        dif && f7.methods.updateOrderStatus(order.id, key, value )
       }
         return () => {f7.off('smartSelectClosed')}
     })
@@ -82,7 +82,7 @@ export default function(props) {
                   <option data-option-color={Colors['READY_FOR_PICKUP']} value='READY_FOR_PICKUP'>{Labels['READY_FOR_PICKUP']}</option>
                   <option data-option-color={Colors['SHIPPED']} value='SHIPPED'>{Labels['SHIPPED']}</option>
                   <option data-option-color={Colors['DELIVERED']} value='DELIVERED'>{Labels['DELIVERED']}</option>
-                  <option data-option-color={Colors['RETURNED ']} value='RETURNED'>{Labels['RETURNED']}</option>
+                  <option data-option-color={Colors['RETURNED']} value='RETURNED'>{Labels['RETURNED']}</option>
                 </optgroup>
               </select>
             </ListItem>
