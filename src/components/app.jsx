@@ -86,14 +86,14 @@ export default class extends React.Component {
           const that = this;
           this.getOrders();
           const eventSource = new EventSource(
-            "http://sdk.m.pipedream.net/pipelines/p_rvCqMgB/sse"
+            "https://sdk.m.pipedream.net/pipelines/p_rvCqMgB/sse"
           );
           eventSource.addEventListener("orders", function(e) {
             console.log("OrdersList: New event from orders stream: ",e);
             // app && app.preloader.show();
             that.getOrders();
           });
-        }
+        },
       },
       methods: {
         convertDateToString: (date) => {
