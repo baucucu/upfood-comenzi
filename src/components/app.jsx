@@ -1,5 +1,4 @@
 import React from 'react';
-import {useState, useEffect} from 'react';
 import { createClient } from '@supabase/supabase-js';
 import _ from 'lodash';
 
@@ -89,10 +88,20 @@ export default class extends React.Component {
             "https://sdk.m.pipedream.net/pipelines/p_rvCqMgB/sse"
           );
           eventSource.addEventListener("orders", function(e) {
-            console.log("OrdersList: New event from orders stream: ",e);
+            const data = JSON.parse(e.data)
+            const date = new Date()
+            console.log("OrdersList: New event from orders stream: ", data);
             // app && app.preloader.show();
+            f7.notification.create({
+              // icon: '<i class="icon demo-icon">7</i>',
+              title: 'UpFood',
+              titleRightText: `${date.getHours()}:${date.getMinutes()}`,
+              subtitle: `${data.eventType} #${data.entityId}`,
+              text: `Payment: ${data.data.newPaymentStatus} \n Fulfillment: ${data.data.newFulfillmentStatus}`,
+              closeOnClick: true
+            }).open()
             that.getOrders();
-          });
+          }); 
         },
       },
       methods: {
