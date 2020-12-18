@@ -1,39 +1,32 @@
 import React from 'react';
-import {useEffect} from 'react';
 import {
     Page,
     Navbar,
     List,
-    ListButton
+    ListButton,
+    ListItem,
   } from 'framework7-react';
-
-import SignOutButton from '../components/sign-out-button'
-
-import { createClient } from '@supabase/supabase-js';
 
 import firebase from "../js/firebase";
 
-// const supabase = createClient("https://vqfzqdaycwbxpestlhyu.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYwNzA4MjE1OSwiZXhwIjoxOTIyNjU4MTU5fQ.nXZeUZu9aAOJJyQ6GDrBKsaL8ZtZHMCzctAsQZA8rZQ")
+import {UserContext} from '../contexts/user-context'
 
 
 
 export default () => {
-  
-  // useEffect(() => {
-  //   supabase.auth.onAuthStateChange((event, session) => {
-  //     console.log("auth state change: ",event, session);
-  //   });
-  // });
-  
+  const user = React.useContext(UserContext);
   return (
     <Page name="account">
       <Navbar title="Account" />
       <List>
+          <ListItem title='User' groupTitle></ListItem>
+          <ListItem title="Name" after={user.name} />
+          <ListItem title="Phone" after={user.phone} />
+          <ListItem title="Role" after={user.role} />
           <ListButton onClick={()=> firebase.auth().signOut()}>
               Sign Out
           </ListButton>
       </List>
-      {/* <SignOutButton/> */}
     </Page>
   )
 }

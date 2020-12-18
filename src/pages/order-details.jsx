@@ -11,7 +11,6 @@ export default function(props) {
   
   const orders = React.useContext(OrdersContext);
   const [order, setOrder] = useState(orders.getOrderById(props.f7route.context.orderId))
-
   
   useEffect(() => {
     
@@ -43,10 +42,7 @@ export default function(props) {
     })
     return () => {f7.off('ptrRefresh')}
   })
-  
-  
-  
-
+ 
   return (
     <Page name="order" ptr >
       <Navbar title={'Comanda #' + order.id} backLink="Back" />
@@ -150,7 +146,3 @@ export default function(props) {
     </Page>
   );
 }
-
-  
-
-  

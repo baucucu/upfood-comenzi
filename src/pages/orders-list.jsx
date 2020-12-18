@@ -82,11 +82,6 @@ export default function OrdersList(props) {
                   {f7.methods.filterOrders(orders.orders, filters).map(order => { if(f7.methods.convertDateToString(order.createDate).date === group) return(
                     <ListItem
                       key={order.id}                      
-                      // title={'Comanda #' + order.id}
-                      // subtitle={order.paymentStatus+'  '+order.fulfillmentStatus}
-                      // after={order.total+' lei'}
-                      // header={app && app.methods.convertDateToString(order.createDate).time}
-                      // footer={_.has(order,'shippingPerson') ? order.shippingPerson.street : 'no delivery'}
                       link={`/order/${order.id}/`}
                       noChevron={true}
                     >

@@ -20,8 +20,6 @@ import {
 import {UserContext} from '../contexts/user-context';
 import {OrdersContext} from '../contexts/orders-context';
 
-import SignInButton from '../components/sign-in-button';
-
 import { f7, f7ready } from 'framework7-react';
 
 import routes from '../js/routes';
@@ -79,9 +77,10 @@ export default class extends React.Component {
               .catch(function (error) {
                 // User couldn't sign in (bad verification code?)
                 console.log(error)
+              })
             })
           })
-          }).catch(function (error) {
+          .catch(function (error) {
             // Error; SMS not sent
             // ...
             console.log(error)
@@ -90,7 +89,6 @@ export default class extends React.Component {
       else {
         f7.dialog.alert('Please enter a valid phone number');
       }
-      
     }
 
     this.signOut = () => {
@@ -136,7 +134,8 @@ export default class extends React.Component {
     }
     
     this.state = {
-      phone:"",
+      name: "",
+      phone: "",
       orders: [],
       getOrders: this.getOrders,
       getOrderById: this.getOrderById,
@@ -177,6 +176,7 @@ export default class extends React.Component {
               console.log(phoneDoc.data())
               that.setState({role: phoneDoc.data().role})
               !that.state.phone && that.setState({phone:phoneDoc.data().phone})
+              !that.state.name && that.setState({name:phoneDoc.data().name})
               console.log(that.state)
             } else {
               // No user is signed in.
@@ -273,7 +273,7 @@ export default class extends React.Component {
               {/* Tabbar for switching views-tabs */}
               <Toolbar tabbar labels bottom>
                 <Link tabLink="#view-orders"  tabLinkActive iconIos="f7:cart_fill" iconAurora="f7:cart_fill" iconMd="material:shopping_cart" text="Orders" />
-                <Link tabLink="#view-settings"  iconIos="f7:gear" iconAurora="f7:gear" iconMd="material:settings" text="Settings" />
+                {/* <Link tabLink="#view-settings"  iconIos="f7:gear" iconAurora="f7:gear" iconMd="material:settings" text="Settings" /> */}
                 <Link tabLink="#view-account"  iconIos="f7:person" iconAurora="f7:person" iconMd="material:person" text="Account" />
               </Toolbar>
 
@@ -281,7 +281,7 @@ export default class extends React.Component {
               <View id="view-orders"  main tab tabActive name="orders" tab url="/orders/" />
 
               {/* Settings View */}
-              <View id="view-settings"  name="settings" tab url="/settings/" />
+              {/* <View id="view-settings"  name="settings" tab url="/settings/" /> */}
 
               {/* Account View */}
               <View id="view-account"  name="account" tab url="/account/" />
@@ -323,9 +323,6 @@ export default class extends React.Component {
 
   componentDidMount() {
     f7ready(() => {      
-      // console.log('$root: ', this.$f7.data.isLoggedIn);
-      // this.$f7.methods.logOut();
-      // this.$f7.methods.getOrders(this.$f7)  
     })
   }
   
