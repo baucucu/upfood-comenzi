@@ -93,7 +93,7 @@ export default function(props) {
         <BlockTitle strong>Driver</BlockTitle>
         <Card>
           <List>
-            <ListItem>Driver</ListItem>
+            <ListItem>{order.additionalInformation.driver || "no driver"}</ListItem>
           </List>
         </Card>
         <BlockTitle strong>Items</BlockTitle>
