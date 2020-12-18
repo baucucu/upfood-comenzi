@@ -8,18 +8,27 @@ import {Labels} from '../helpers/labels';
 import {OrdersContext} from '../contexts/orders-context'
 
 export default function(props) {
+  
   const orders = React.useContext(OrdersContext);
   const [order, setOrder] = useState(orders.getOrderById(props.f7route.context.orderId))
 
+  
   useEffect(() => {
+    
     f7.on('smartSelectClosed',async function(ss) {
       if(ss.selectName == 'paymentStatus' || ss.selectName == 'fulfillmentStatus') {
         let value = ss.getValue()
         let key = ss.selectName
-        let newPaymentStatus = key == "paymentStatus" ? value : order.paymentStatus
-        let newFulfillmentStatus = key == "fulfillmentStatus" ? value : order.fulfillmentStatus
         let dif = order[key] !== value
         dif && f7.methods.updateOrderStatus(order.id, key, value )
+      }
+        return () => {f7.off('smartSelectClosed')}
+    })
+    f7.on('smartSelectClosed',async function(ss) {
+      if(ss.selectName == 'driver') {
+        let value = ss.getValue()
+        let dif = order.additionalInfo.driver!== value
+        dif && f7.methods.updateOrderStatus(order.id, 'additionalInfo', {driver: value} )
       }
         return () => {f7.off('smartSelectClosed')}
     })
@@ -33,26 +42,29 @@ export default function(props) {
     })
     return () => {f7.off('ptrRefresh')}
   })
+  
+  
+  
 
-    return (
-      <Page name="order" ptr >
-        <Navbar title={'Comanda #' + order.id} backLink="Back" />
-        <BlockTitle strong>{f7.methods.convertDateToString(order.createDate).date}, {f7.methods.convertDateToString(order.createDate).time}</BlockTitle>
-        {!_.has(order, 'shippingPerson') ? null : 
-        <Card> 
-          <CardHeader>{order.shippingPerson.name}</CardHeader>
-          <CardContent>
-          <Link><Icon ios="f7:phone" aurora="f7:phone" md="material:phone"></Icon>{order.shippingPerson.phone}</Link>
-          </CardContent>
-          <CardContent>
-            <Link><Icon ios="f7:placemark" aurora="f7:placemark" md="material:placemark"></Icon>{order.shippingPerson.street}</Link>
-          </CardContent>
-        </Card>}
-        <BlockTitle strong>Status</BlockTitle>
-        <Card>
-          <CardHeader>{order.paymentMethod}</CardHeader>
-          <CardContent>
-            <List>
+  return (
+    <Page name="order" ptr >
+      <Navbar title={'Comanda #' + order.id} backLink="Back" />
+      <BlockTitle strong>{f7.methods.convertDateToString(order.createDate).date}, {f7.methods.convertDateToString(order.createDate).time}</BlockTitle>
+      {!_.has(order, 'shippingPerson') ? null : 
+      <Card> 
+        <CardHeader>{order.shippingPerson.name}</CardHeader>
+        <CardContent>
+        <Link><Icon ios="f7:phone" aurora="f7:phone" md="material:phone"></Icon>{order.shippingPerson.phone}</Link>
+        </CardContent>
+        <CardContent>
+          <Link><Icon ios="f7:placemark" aurora="f7:placemark" md="material:placemark"></Icon>{order.shippingPerson.street}</Link>
+        </CardContent>
+      </Card>}
+      <BlockTitle strong>Status</BlockTitle>
+      <Card>
+        <CardHeader>{order.paymentMethod}</CardHeader>
+        <CardContent>
+          <List>
             <ListItem 
               title={'Payment'}
               smartSelect
@@ -86,48 +98,57 @@ export default function(props) {
                 </optgroup>
               </select>
             </ListItem>
-              
-            </List>
-          </CardContent>
-        </Card>
-        {/* driver information */}
-        <BlockTitle strong>Driver</BlockTitle>
-        <Card>
-          <List>
-            <ListItem>{order.additionalInformation.driver || "no driver"}</ListItem>
-          </List>
-        </Card>
-        <BlockTitle strong>Items</BlockTitle>
-        <Card>
-            <CardContent>
-              <List accordionList>
-                {order.items.map((item, index) => 
-                  <ListItem 
-                    accordionItem = {_.has(item,'selectedOptions')}
-                    key={index} 
-                    title={item.name }
-                    // media={item.smallThumbnailUrl}
-                  >
-                    <Chip  slot="after-title" color={Colors['MAIN']}>{item.quantity}</Chip>
-                    <AccordionContent>
-                      <Block>
-                      {_.has(item,'selectedOptions') && <div>
-                          {item.selectedOptions.map((option, index) =>  <p key={index} >{option.name}: {option.value}</p>) }
-                        </div> 
-                      }
-                      </Block>
-                    </AccordionContent>
-                  </ListItem>)}
-              </List>
+            <ListItem 
+              title={'Driver'}
+              smartSelect
+              smartSelectParams={{openIn: 'page'}}
+              className='smart-select smart-select-init'
+              id='driver-select'
+            >
+              <select name='driver' id='driver' defaultValue={order.additionalInfo.driver}>
+                <optgroup label='DRIVER'>
+                  <option data-option-color={Colors['RETURNED']} value='NO DRIVER'>NO DRIVER</option>
+                  {
+                    f7.data.drivers.map((driver,index) => { return <option key={index} value={driver.driver}>{driver.driver}</option>})
+                  }
+                </optgroup>
+              </select>
+            </ListItem>
 
-            </CardContent>
-            <CardFooter>
-              {'Total: '+order.total+' lei'}
-            </CardFooter>
-          </Card>
-      </Page>
-    );
-  }
+          </List>
+        </CardContent>
+      </Card>
+      <BlockTitle strong>Items</BlockTitle>
+      <Card>
+          <CardContent>
+            <List accordionList>
+              {order.items.map((item, index) => 
+                <ListItem 
+                  accordionItem = {_.has(item,'selectedOptions')}
+                  key={index} 
+                  title={item.name }
+                  // media={item.smallThumbnailUrl}
+                >
+                  <Chip  slot="after-title" color={Colors['MAIN']}>{item.quantity}</Chip>
+                  <AccordionContent>
+                    <Block>
+                    {_.has(item,'selectedOptions') && <div>
+                        {item.selectedOptions.map((option, index) =>  <p key={index} >{option.name}: {option.value}</p>) }
+                      </div> 
+                    }
+                    </Block>
+                  </AccordionContent>
+                </ListItem>)}
+            </List>
+
+          </CardContent>
+          <CardFooter>
+            {'Total: '+order.total+' lei'}
+          </CardFooter>
+        </Card>
+    </Page>
+  );
+}
 
   
 

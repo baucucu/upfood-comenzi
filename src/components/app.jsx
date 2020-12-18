@@ -30,6 +30,11 @@ import firebase from "../js/firebase";
 var firebaseui = require('firebaseui');
 var ui = new firebaseui.auth.AuthUI(firebase.auth());
 
+const admin = require("firebase/firestore");
+var db = firebase.firestore();
+
+const usersRef = db.collection('users');
+const driversRef = db.collection('drivers');
 export default class extends React.Component {
   constructor(props) {
     super(props);
@@ -45,35 +50,44 @@ export default class extends React.Component {
       });
     }
 
-    this.onSignInSubmit = () => {
-      // event.preventDefault();
+    this.onSignInSubmit = async () => {
       var that = this;
-      this.setupRecaptcha();
-      var phoneNumber = '+40754832167';
-      var appVerifier = window.recaptchaVerifier;
-      firebase.auth().signInWithPhoneNumber(phoneNumber, appVerifier)
-        .then( (confirmationResult) => {
-          // SMS sent. Prompt user to type the code from the message, then sign the
-          // user in with confirmationResult.confirm(code).
-          window.confirmationResult = confirmationResult;
-          var code = window.prompt('Enter OTP code');
-          confirmationResult.confirm(code).then(function (result) {
-            // User signed in successfully.
-            var user = result.user;
-            console.log(this);
-            that.signIn(user);
-            console.log('User signed in successfully', user)
+      
+      const phoneDoc = await usersRef.doc(that.state.phone).get()
+
+      if(phoneDoc.exists) {
+        that.setupRecaptcha();
+        var phoneNumber = that.state.phone;
+        var appVerifier = window.recaptchaVerifier;
+        firebase.auth().signInWithPhoneNumber(phoneNumber, appVerifier)
+          .then( (confirmationResult) => {
+            // SMS sent. Prompt user to type the code from the message, then sign the
+            // user in with confirmationResult.confirm(code).
+            window.confirmationResult = confirmationResult;
             
-            // ...
+            f7.dialog.prompt('Enter verification code sent to your phone', (code) => {
+              confirmationResult.confirm(code).then(function (result) {
+                // User signed in successfully.
+                var user = result.user;
+                // console.log(this);
+                // that.signIn(user);
+                console.log('User signed in successfully', user)
+            });
+              // ...
+            }).catch(function (error) {
+              // User couldn't sign in (bad verification code?)
+              console.log(error)
+            });
           }).catch(function (error) {
-            // User couldn't sign in (bad verification code?)
+            // Error; SMS not sent
+            // ...
             console.log(error)
           });
-        }).catch(function (error) {
-          // Error; SMS not sent
-          // ...
-          console.log(error)
-        });
+      }
+      else {
+        f7.dialog.alert('Please enter a valid phone number');
+      }
+      
     }
 
     this.signOut = () => {
@@ -103,6 +117,20 @@ export default class extends React.Component {
     this.getOrderById = (id) => {
       return this.state.orders.filter(order => {return (order.id === id)})[0]
     }
+
+    this.getDrivers = async () => {
+      const drivers = [];
+      await driversRef.get()
+      .then(function(querySnapshot) {
+        querySnapshot.forEach(function(doc) {
+            // doc.data() is never undefined for query doc snapshots
+            drivers.push(doc.data())
+            // console.log(doc.id, " => ", doc.data());
+        });
+      });
+      f7.data.drivers = drivers;
+      // this.setState(drivers);
+    }
     
     this.state = {
       phone:"",
@@ -110,9 +138,10 @@ export default class extends React.Component {
       getOrders: this.getOrders,
       getOrderById: this.getOrderById,
       user: {},
-      isLoggedIn: true,
+      role: "",
+      isLoggedIn: false,
       signOut: this.signOut,
-      signIn: this.signIn
+      signIn: this.signIn,
     }
   }
 
@@ -132,8 +161,26 @@ export default class extends React.Component {
       on:{
         'init': () => {
           const that = this;
+          
           this.getOrders();
           
+          this.getDrivers();
+
+          firebase.auth().onAuthStateChanged(async (user) => {
+            if (user) {
+              // User is signed in.
+              that.signIn(user);
+              const phoneDoc = await usersRef.doc(that.state.phone || '+40754832167').get()
+              console.log(phoneDoc.data())
+              that.setState({role: phoneDoc.data().role})
+              !that.state.phone && that.setState({phone:phoneDoc.data().phone})
+              console.log(that.state)
+            } else {
+              // No user is signed in.
+              that.signOut();
+            }
+          });
+
           const eventSource = new EventSource(
             "https://sdk.m.pipedream.net/pipelines/p_rvCqMgB/sse"
           );
@@ -246,30 +293,17 @@ export default class extends React.Component {
                     <ListInput
                       type="tel"
                       name="phone"
-                      placeholder="phone number"
+                      placeholder="Enter your phone number"
                       // value={username}
                       onInput={(e) => {this.setState({phone: e.target.value}) }}
                     ></ListInput>
                   </List>
                   <div id='recaptcha-container'></div>
                   <List>
-                    <ListButton title="Sign In" onClick={ () => {
-                        var phoneNumber = this.state.phone;
-                      }} 
-                    />
-                    <ListButton title="Sign Out" onClick={async () => {
-                        const { error } = supabase.auth.signOut()
-                      }} 
-                    />
-                    <ListButton title="Session" onClick={ () => {
-                        getSession();
-                      }} 
-                    />
-                    <ListButton title="Firebase sign in" onClick={ () => {
+                    <ListButton title="Sign in with your phone" onClick={ () => {
                         this.onSignInSubmit();
                       }} 
                     />
-                    <SignInButton id="sign-in-button"/>
                     <BlockFooter>
                       Some text about login information.<br />Click "Sign In" to close Login Screen
                     </BlockFooter>
