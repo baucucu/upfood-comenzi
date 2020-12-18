@@ -1,5 +1,5 @@
 import React from 'react';
-import { createClient } from '@supabase/supabase-js';
+// import { createClient } from '@supabase/supabase-js';
 import _ from 'lodash';
 
 import {
@@ -26,19 +26,67 @@ import { f7, f7ready } from 'framework7-react';
 
 import routes from '../js/routes';
 
+import firebase from "../js/firebase";
+var firebaseui = require('firebaseui');
+var ui = new firebaseui.auth.AuthUI(firebase.auth());
+
 export default class extends React.Component {
   constructor(props) {
     super(props);
-    
+
+    this.setupRecaptcha = () => {
+      window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+        'size': 'invisible',
+        'callback': function(response) {
+          // reCAPTCHA solved, allow signInWithPhoneNumber.
+          console.log('reCAPTCHA solved')
+          this.onSignInSubmit();
+        }
+      });
+    }
+
+    this.onSignInSubmit = () => {
+      // event.preventDefault();
+      var that = this;
+      this.setupRecaptcha();
+      var phoneNumber = '+40754832167';
+      var appVerifier = window.recaptchaVerifier;
+      firebase.auth().signInWithPhoneNumber(phoneNumber, appVerifier)
+        .then( (confirmationResult) => {
+          // SMS sent. Prompt user to type the code from the message, then sign the
+          // user in with confirmationResult.confirm(code).
+          window.confirmationResult = confirmationResult;
+          var code = window.prompt('Enter OTP code');
+          confirmationResult.confirm(code).then(function (result) {
+            // User signed in successfully.
+            var user = result.user;
+            console.log(this);
+            that.signIn(user);
+            console.log('User signed in successfully', user)
+            
+            // ...
+          }).catch(function (error) {
+            // User couldn't sign in (bad verification code?)
+            console.log(error)
+          });
+        }).catch(function (error) {
+          // Error; SMS not sent
+          // ...
+          console.log(error)
+        });
+    }
+
     this.signOut = () => {
       this.setState(state => ({
-        isLoggedIn: !this.state.isLoggedIn
+        user: {},
+        isLoggedIn: false
       }))
     }
 
-    this.signIn = () => {
+    this.signIn = (user) => {
       this.setState(state => ({
-        isLoggedIn: !this.state.isLoggedIn
+        user: user,
+        isLoggedIn: true
       }))
     }
 
@@ -57,6 +105,7 @@ export default class extends React.Component {
     }
     
     this.state = {
+      phone:"",
       orders: [],
       getOrders: this.getOrders,
       getOrderById: this.getOrderById,
@@ -66,6 +115,7 @@ export default class extends React.Component {
       signIn: this.signIn
     }
   }
+
   // const supabase = createClient("https://vqfzqdaycwbxpestlhyu.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYwNzA4MjE1OSwiZXhwIjoxOTIyNjU4MTU5fQ.nXZeUZu9aAOJJyQ6GDrBKsaL8ZtZHMCzctAsQZA8rZQ")        
   
   render(){
@@ -83,6 +133,7 @@ export default class extends React.Component {
         'init': () => {
           const that = this;
           this.getOrders();
+          
           const eventSource = new EventSource(
             "https://sdk.m.pipedream.net/pipelines/p_rvCqMgB/sse"
           );
@@ -193,27 +244,17 @@ export default class extends React.Component {
                   <LoginScreenTitle>Login</LoginScreenTitle>
                   <List form>
                     <ListInput
-                      type="email"
-                      name="email"
-                      placeholder="email address"
+                      type="tel"
+                      name="phone"
+                      placeholder="phone number"
                       // value={username}
-                      onInput={(e) => {setUsername(e.target.value) }}
+                      onInput={(e) => {this.setState({phone: e.target.value}) }}
                     ></ListInput>
-                    {/* <ListInput
-                      type="password"
-                      name="password"
-                      placeholder="Your password"
-                      value={password}
-                      onInput={(e) => this.setPasssword(e.target.value)}
-                    ></ListInput> */}
                   </List>
+                  <div id='recaptcha-container'></div>
                   <List>
-                    <ListButton title="Sign In" onClick={async () => {
-                        app && app.dialog.alert('Magic link sent to your email');
-                        // const { user, error } = await supabase.auth.signIn({
-                        //   email: username
-                        // })
-
+                    <ListButton title="Sign In" onClick={ () => {
+                        var phoneNumber = this.state.phone;
                       }} 
                     />
                     <ListButton title="Sign Out" onClick={async () => {
@@ -224,7 +265,11 @@ export default class extends React.Component {
                         getSession();
                       }} 
                     />
-                    <SignInButton/>
+                    <ListButton title="Firebase sign in" onClick={ () => {
+                        this.onSignInSubmit();
+                      }} 
+                    />
+                    <SignInButton id="sign-in-button"/>
                     <BlockFooter>
                       Some text about login information.<br />Click "Sign In" to close Login Screen
                     </BlockFooter>
