@@ -90,6 +90,7 @@ export default function(props) {
             </List>
           </CardContent>
         </Card>
+        {/* driver information */}
         <BlockTitle strong>Driver</BlockTitle>
         <Card>
           <List>
