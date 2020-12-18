@@ -29,6 +29,7 @@ export default function(props) {
         let value = ss.getValue()
         let dif = order.additionalInfo.driver!== value
         dif && f7.methods.updateOrderStatus(order.id, 'additionalInfo', {driver: value} )
+        dif && f7.methods.updateOrderStatus(order.id, 'privateAdminNotes', `Driver: ${value}` )
       }
         return () => {f7.off('smartSelectClosed')}
     })

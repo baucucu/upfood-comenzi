@@ -56,9 +56,12 @@ export default class extends React.Component {
       const phoneDoc = await usersRef.doc(that.state.phone).get()
 
       if(phoneDoc.exists) {
+        
         that.setupRecaptcha();
+        
         var phoneNumber = that.state.phone;
         var appVerifier = window.recaptchaVerifier;
+        
         firebase.auth().signInWithPhoneNumber(phoneNumber, appVerifier)
           .then( (confirmationResult) => {
             // SMS sent. Prompt user to type the code from the message, then sign the
@@ -72,12 +75,12 @@ export default class extends React.Component {
                 // console.log(this);
                 // that.signIn(user);
                 console.log('User signed in successfully', user)
-            });
-              // ...
-            }).catch(function (error) {
-              // User couldn't sign in (bad verification code?)
-              console.log(error)
-            });
+              })              // ...
+              .catch(function (error) {
+                // User couldn't sign in (bad verification code?)
+                console.log(error)
+            })
+          })
           }).catch(function (error) {
             // Error; SMS not sent
             // ...
