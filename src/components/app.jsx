@@ -59,7 +59,7 @@ export default class extends React.Component {
         
         var phoneNumber = that.state.phone;
         var appVerifier = window.recaptchaVerifier;
-        
+        console.log("Signing in with: ", phoneNumber)
         firebase.auth().signInWithPhoneNumber(phoneNumber, appVerifier)
           .then( (confirmationResult) => {
             // SMS sent. Prompt user to type the code from the message, then sign the
@@ -173,11 +173,11 @@ export default class extends React.Component {
               // User is signed in.
               that.signIn(user);
               const phoneDoc = await usersRef.doc(that.state.phone || '+40754832167').get()
-              console.log(phoneDoc.data())
+              // console.log(phoneDoc.data())
               that.setState({role: phoneDoc.data().role})
               !that.state.phone && that.setState({phone:phoneDoc.data().phone})
               !that.state.name && that.setState({name:phoneDoc.data().name})
-              console.log(that.state)
+              // console.log(that.state)
             } else {
               // No user is signed in.
               that.signOut();
