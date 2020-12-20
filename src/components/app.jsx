@@ -146,8 +146,6 @@ export default class extends React.Component {
       signIn: this.signIn,
     }
   }
-
-  // const supabase = createClient("https://vqfzqdaycwbxpestlhyu.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYwNzA4MjE1OSwiZXhwIjoxOTIyNjU4MTU5fQ.nXZeUZu9aAOJJyQ6GDrBKsaL8ZtZHMCzctAsQZA8rZQ")        
   
   render(){
     const f7params =  {
@@ -156,17 +154,15 @@ export default class extends React.Component {
       // App root data
       data: function () {
         return {
-          orders: [],
-          isLoggedIn: true,
         };
       },
       on:{
         'init': () => {
           const that = this;
           
-          this.getOrders();
+          that.getOrders();
           
-          this.getDrivers();
+          that.getDrivers();
 
           firebase.auth().onAuthStateChanged(async (user) => {
             if (user) {
@@ -177,7 +173,6 @@ export default class extends React.Component {
               that.setState({role: phoneDoc.data().role})
               !that.state.phone && that.setState({phone:phoneDoc.data().phone})
               !that.state.name && that.setState({name:phoneDoc.data().name})
-              // console.log(that.state)
             } else {
               // No user is signed in.
               that.signOut();
@@ -191,7 +186,6 @@ export default class extends React.Component {
             const data = JSON.parse(e.data)
             const date = new Date()
             console.log("OrdersList: New event from orders stream: ", data);
-            // app && app.preloader.show();
             f7.notification.create({
               // icon: '<i class="icon demo-icon">7</i>',
               title: 'UpFood',
