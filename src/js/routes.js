@@ -8,6 +8,8 @@ import AccountPage from '../pages/account.jsx';
 
 import NotFoundPage from '../pages/404.jsx';
 
+import { f7, f7ready } from 'framework7-react';
+
 var routes = [
   
   {
@@ -18,6 +20,11 @@ var routes = [
     path: '/orders',
     component: OrdersPage,
     ignoreCache:true,
+    on: { 
+      'pageInit': () => {
+        console.log('pageInit')
+      }
+    }
   },
   // {
   //   path: 'order/:id/',

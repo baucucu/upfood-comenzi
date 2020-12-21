@@ -104,6 +104,7 @@ export default class extends React.Component {
         isLoggedIn: true
       }))
     }
+    
 
     this.getOrders = () => {
       console.log("get orders")
@@ -158,44 +159,44 @@ export default class extends React.Component {
       },
       on:{
         'init': () => {
-          const that = this;
-          
-          that.getOrders();
-          
-          that.getDrivers();
+          const that = this;          
 
           firebase.auth().onAuthStateChanged(async (user) => {
             if (user) {
               // User is signed in.
               that.signIn(user);
               const phoneDoc = await usersRef.doc(that.state.phone || '+40754832167').get()
-              // console.log(phoneDoc.data())
+              
               that.setState({role: phoneDoc.data().role})
-              !that.state.phone && that.setState({phone:phoneDoc.data().phone})
-              !that.state.name && that.setState({name:phoneDoc.data().name})
+              that.setState({phone:phoneDoc.data().phone})
+              that.setState({name:phoneDoc.data().name})
+              
+              that.getOrders();
+              that.getDrivers();
+
+              const eventSource = new EventSource(
+                "https://sdk.m.pipedream.net/pipelines/p_rvCqMgB/sse"
+              );
+              eventSource.addEventListener("orders", function(e) {
+                const data = JSON.parse(e.data)
+                const date = new Date()
+                console.log("OrdersList: New event from orders stream: ", data);
+                f7.notification.create({
+                  // icon: '<i class="icon demo-icon">7</i>',
+                  title: 'UpFood',
+                  titleRightText: `${date.getHours()}:${date.getMinutes()}`,
+                  subtitle: `${data.eventType} #${data.entityId}`,
+                  text: `Payment: ${data.data.newPaymentStatus} \n Fulfillment: ${data.data.newFulfillmentStatus}`,
+                  closeOnClick: true
+                }).open()
+                that.getOrders();
+              }); 
+
             } else {
               // No user is signed in.
               that.signOut();
             }
           });
-
-          const eventSource = new EventSource(
-            "https://sdk.m.pipedream.net/pipelines/p_rvCqMgB/sse"
-          );
-          eventSource.addEventListener("orders", function(e) {
-            const data = JSON.parse(e.data)
-            const date = new Date()
-            console.log("OrdersList: New event from orders stream: ", data);
-            f7.notification.create({
-              // icon: '<i class="icon demo-icon">7</i>',
-              title: 'UpFood',
-              titleRightText: `${date.getHours()}:${date.getMinutes()}`,
-              subtitle: `${data.eventType} #${data.entityId}`,
-              text: `Payment: ${data.data.newPaymentStatus} \n Fulfillment: ${data.data.newFulfillmentStatus}`,
-              closeOnClick: true
-            }).open()
-            that.getOrders();
-          }); 
         },
       },
       methods: {
