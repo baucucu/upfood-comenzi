@@ -115,6 +115,20 @@ export default function(props) {
           </List>
         </CardContent>
       </Card>
+      {_.has(order, 'privateAdminNotes') && <BlockTitle strong>Internal Notes</BlockTitle>}
+      {_.has(order, 'privateAdminNotes') &&
+      <Card> 
+        {/* <CardHeader>{order.shippingPerson.name}</CardHeader> */}
+        <CardContent>{order.privateAdminNotes}</CardContent>
+        </Card>
+      }
+      {_.has(order, 'orderComments') && <BlockTitle strong>Customer Comments</BlockTitle>}
+      {_.has(order, 'orderComments') &&
+      <Card> 
+        {/* <CardHeader>{order.shippingPerson.name}</CardHeader> */}
+        <CardContent>{order.orderComments}</CardContent>
+        </Card>
+      }   
       <BlockTitle strong>Items</BlockTitle>
       <Card>
           <CardContent>

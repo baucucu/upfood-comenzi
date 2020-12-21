@@ -56,3 +56,7 @@
   margin-right: 2px;
 }
 /* Your app custom styles here */
+
+#right-nav-button {
+  margin-right:8px;
+}

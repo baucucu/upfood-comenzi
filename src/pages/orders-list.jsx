@@ -1,6 +1,6 @@
 import React from 'react';
 import {useState, useEffect} from 'react';
-import { Chip, BlockTitle, Card, Icon, Subnavbar, Searchbar, Page, Navbar, List, ListItem, ListGroup } from 'framework7-react';
+import { Button,Chip, BlockTitle, Card, Icon, Subnavbar, Searchbar, Page, Navbar, List, ListItem, ListGroup } from 'framework7-react';
 import _ from 'lodash';
 import { f7, f7ready } from 'framework7-react';
 import {Colors} from '../helpers/colors';
@@ -9,8 +9,23 @@ import {OrdersContext} from '../contexts/orders-context'
 
 export default function OrdersList(props) {
 
+  const [editMode, setEditMode] = useState(false);
   const orders = React.useContext(OrdersContext);
+  const [selectedItems, setSelectedItems] = useState([]);
   const [filters, setFilters] = useState(['PAID','AWAITING_PAYMENT','CANCELLED','AWAITING_PROCESSING','PROCESSING','SHIPPED','RETURNED'])
+
+  const rightNavButtonCLlicked = () => {
+    console.log('rightNavButtonCLlicked')
+    setEditMode(!editMode);
+  }
+
+  const onListItemCheck = (e, orderId) => {
+    console.log('listItemCheck: ',orderId, e)
+    let newSelectedItemsArray = selectedItems;
+    newSelectedItemsArray[orderId] = !newSelectedItemsArray[orderId]
+    setSelectedItems(newSelectedItemsArray);
+    console.log(selectedItems)
+  }
 
   useEffect(() => {
     f7.on('ptrRefresh', (ptr) => {
@@ -40,9 +55,17 @@ export default function OrdersList(props) {
             searchItem='li'
             searchIn='.item-title , .item-subtitle, .item-footer, .item-header'
           ></Searchbar>
-          
         </Subnavbar>
-        
+        <Button 
+          slot='right' 
+          id='right-nav-button' 
+          onClick={() => {rightNavButtonCLlicked()}} 
+          color='white' 
+          iconIos={editMode ? "f7:checkmark_alt" : "f7:edit" }
+          iconAurora={editMode ? "f7:checkmark_alt" : "f7:edit" }
+          iconMd={editMode ? "f7:checkmark_alt" : "material:edit"}>
+            {/* {editMode ? "Ship" : "Select"} */}
+        </Button>
       </Navbar>
       <List>
         <ListItem
@@ -82,8 +105,10 @@ export default function OrdersList(props) {
                   {f7.methods.filterOrders(orders.orders, filters).map(order => { if(f7.methods.convertDateToString(order.createDate).date === group) return(
                     <ListItem
                       key={order.id}                      
-                      link={`/order/${order.id}/`}
+                      link={editMode ? false : `/order/${order.id}/`}
+                      onChange={(e)=> {onListItemCheck(e, order.id)}}
                       noChevron={true}
+                      checkbox={editMode}
                     >
                       <Chip slot="header"  outline  text={f7.methods.convertDateToString(order.createDate).time}>
                         <Icon slot="media" color='black' ios="f7:clock" aurora="f7:clock" md="material:slow_motion_video"></Icon>
