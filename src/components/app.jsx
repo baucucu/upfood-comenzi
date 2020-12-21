@@ -28,7 +28,7 @@ import firebase from "../js/firebase";
 var firebaseui = require('firebaseui');
 var ui = new firebaseui.auth.AuthUI(firebase.auth());
 
-const admin = require("firebase/firestore");
+require("firebase/firestore");
 var db = firebase.firestore();
 
 const usersRef = db.collection('users');
@@ -48,10 +48,15 @@ export default class extends React.Component {
       });
     }
 
-    this.onSignInSubmit = async () => {
+    this.onSignInSubmit = async (phone) => {
       var that = this;
       
-      const phoneDoc = await usersRef.doc(that.state.phone).get()
+      if(!/^(\+4|)?(07[0-8]{1}[0-9]{1}|02[0-9]{2}|03[0-9]{2}){1}?(\s|\.|\-)?([0-9]{3}(\s|\.|\-|)){2}$/.test(phone)){
+        f7.dialog.alert('Please enter a valid phone number');
+        return;
+      }
+
+      const phoneDoc = await usersRef.doc(phone).get()
 
       if(phoneDoc.exists) {
         
@@ -87,7 +92,7 @@ export default class extends React.Component {
           });
       }
       else {
-        f7.dialog.alert('Please enter a valid phone number');
+        f7.dialog.alert('Phone number is not in the users database');
       }
     }
 
@@ -108,11 +113,13 @@ export default class extends React.Component {
 
     this.getOrders = () => {
       console.log("get orders")
+      f7.preloader.show() 
       fetch(`https://app.ecwid.com/api/v3/38960101/orders?token=secret_MWWdFUtVHMmkjtFWaaqerrPaCF2rthQT`,)
         .then(response => response.json())
         .then(data => {
           this.setState({orders: data.items})
           console.log('Comenzi downloaded')
+          f7.preloader.hide() 
         })
     }
 
@@ -165,7 +172,8 @@ export default class extends React.Component {
             if (user) {
               // User is signed in.
               that.signIn(user);
-              const phoneDoc = await usersRef.doc(that.state.phone || '+40754832167').get()
+              console.log(user.phoneNumber)
+              const phoneDoc = await usersRef.doc(user.phoneNumber).get()
               
               that.setState({role: phoneDoc.data().role})
               that.setState({phone:phoneDoc.data().phone})
@@ -299,7 +307,7 @@ export default class extends React.Component {
                   <div id='recaptcha-container'></div>
                   <List>
                     <ListButton title="Sign in with your phone" onClick={ () => {
-                        this.onSignInSubmit();
+                        this.onSignInSubmit(this.state.phone);
                       }} 
                     />
                     <BlockFooter>
